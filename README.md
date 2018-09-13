@@ -31,7 +31,9 @@ Add a new `NovaDependencyContainer` to your Nova Resource:
 ])->dependsOn('name_format', 0)->onlyOnForms(),
 ```
 
-It is also possible to set up multiple dependencies for your container by calling `dependsOn` multiple times on the container. You can use any type of field type dependency, i.e. a checkbox:
+It is also possible to set up multiple dependencies for your container by calling `dependsOn` multiple times on the container. 
+
+You can use any type of field type dependency, i.e. a checkbox:
 
 ```php
 \Laravel\Nova\Fields\Boolean::make('Active', 'active'),
