@@ -5,7 +5,7 @@
 ![Packagist](https://img.shields.io/packagist/l/epartment/nova-dependency-container.svg)
 
 ### Description
-A container for grouping fields that depend on other field values
+A container for grouping fields that depend on other field values. Dependencies can be set on any field type or value.
 
 ### Demo
 
@@ -31,7 +31,15 @@ Add a new `NovaDependencyContainer` to your Nova Resource:
 ])->dependsOn('name_format', 0)->onlyOnForms(),
 ```
 
-It is also possible to set up multiple dependencies for your container by calling `dependsOn` multiple times on the container.
+It is also possible to set up multiple dependencies for your container by calling `dependsOn` multiple times on the container. You can use any type of field type dependency, i.e. a checkbox:
+
+```php
+\Laravel\Nova\Fields\Boolean::make('Active', 'active'),
+
+\Epartment\NovaDependencyContainer\NovaDependencyContainer::make('Dependent settings', [
+    \Laravel\Nova\Fields\Text::make('First Name', 'first_name')
+])->dependsOn('active', true)->onlyOnForms(),
+```
 
 The container it self won't contain any values and will simply pass through the values of the contained fields and their corresponding attributes.
 
