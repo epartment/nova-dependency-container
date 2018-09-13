@@ -45,6 +45,21 @@ You can use any type of field type dependency, i.e. a checkbox:
 ])->dependsOn('active', true)->onlyOnForms(),
 ```
 
+### 3rd Party support
+Using the `dependsOnCustomComponent` method on the Dependency Container, you can target 3rd Party Nova Components. Specifying the exact component name , the Dependency Container will add value watchers to these components, allowing you to depend on their values. You can find the component names `field.js` file in the source of the 3rd party package. Usually they start with `form-{component-name}`.
+
+For example using the https://github.com/davidpiesse/nova-toggle field, you can get the name of the component here: https://github.com/davidpiesse/nova-toggle/blob/master/resources/js/field.js#L7 and use it like below:
+
+```php
+\Davidpiesse\NovaToggle\Toggle::make('Our Option', 'selectable_option')->hideFromIndex(),
+
+\Epartment\NovaDependencyContainer\NovaDependencyContainer::make('Dependent settings', [
+    \Laravel\Nova\Fields\Trix::make('Details', 'selectable_option_details'),
+])->dependsOn('selectable_option', true)->dependsOnCustomComponent('form-nova-toggle'),
+```
+
+
+### Data handling
 The container it self won't contain any values and will simply pass through the values of the contained fields and their corresponding attributes.
 
 ### License

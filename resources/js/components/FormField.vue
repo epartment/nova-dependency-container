@@ -41,20 +41,7 @@
         })
       })
 
-      this.$parent.$parent.$children[1].$children.forEach(component => {
-        if (component.constructor.options.name.endsWith('-field')) {
-          component.$watch('value', (value, oldValue) => {
-            Nova.$emit(component.field.attribute + '-value-changed', {field: component.field, value: component.value})
-          }, {immediate: true})
-
-          component.$watch('selectedResource.value', (value, oldValue) => {
-            Nova.$emit(component.field.attribute + '-value-changed', {
-              field: component.field,
-              value: component.selectedResource != null ? component.selectedResource.value : component.value
-            })
-          }, {immediate: true})
-        }
-      })
+      this.registerValueWatchers(this.$root)
     },
 
     data() {
@@ -71,6 +58,29 @@
     },
 
     methods: {
+      registerValueWatchers (root) {
+        root.$children.forEach(component => {
+          if (component.constructor.options !== undefined && component.constructor.options.name !== undefined) {
+            if (component.constructor.options.name.endsWith('-field') || this.field.depends_custom.includes(component.constructor.options.name)) {
+              component.$watch('value', (value, oldValue) => {
+                Nova.$emit(component.field.attribute + '-value-changed', {
+                  field: component.field,
+                  value: component.value
+                })
+              }, {immediate: true})
+
+              component.$watch('selectedResource.value', (value, oldValue) => {
+                Nova.$emit(component.field.attribute + '-value-changed', {
+                  field: component.field,
+                  value: component.selectedResource != null ? component.selectedResource.value : component.value
+                })
+              }, {immediate: true})
+            }
+          }
+
+          this.registerValueWatchers(component)
+        })
+      },
 
       /**
        * Fill the given FormData object with the field's internal value.

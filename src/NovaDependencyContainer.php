@@ -18,6 +18,8 @@ class NovaDependencyContainer extends Field
         parent::__construct($name, $attribute, $resolveCallback);
 
         $this->withMeta(['fields' => $fields]);
+        $this->withMeta(['dependencies' => []]);
+        $this->withMeta(['depends_custom' => []]);
     }
 
     /**
@@ -30,7 +32,21 @@ class NovaDependencyContainer extends Field
     public function dependsOn($field, $value)
     {
         return $this->withMeta([
-            'dependencies' => array_merge($this->meta['dependencies'] ?? [], [['field' => $field, 'value' => $value]])
+            'dependencies' => array_merge($this->meta['dependencies'], [['field' => $field, 'value' => $value]])
+        ]);
+    }
+
+    /**
+     * Allows you to pass component names that should be watched
+     * by the container for value changes
+     *
+     * @param $componentName
+     * @return $this
+     */
+    public function dependsOnCustomComponent($componentName)
+    {
+        return $this->withMeta([
+            'depends_custom' => array_merge($this->meta['depends_custom'], [$componentName])
         ]);
     }
 
