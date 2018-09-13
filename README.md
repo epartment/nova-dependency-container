@@ -1,8 +1,8 @@
 # Nova Field Dependency Container
 
-![Packagist](https://img.shields.io/packagist/v/epartment/nova-dependency-container.svg)
-![Packagist](https://img.shields.io/packagist/dt/epartment/nova-dependency-container.svg)
-![Packagist](https://img.shields.io/packagist/l/epartment/nova-dependency-container.svg)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/epartment/nova-dependency-container.svg)](https://packagist.org/packages/epartment/nova-dependency-container)
+[![Total Downloads](https://img.shields.io/packagist/dt/epartment/nova-dependency-container.svg)](https://packagist.org/packages/epartment/nova-dependency-container)
+[![License](https://img.shields.io/packagist/l/epartment/nova-dependency-container.svg)](https://github.com/epartment/nova-dependency-container/blob/master/LICENSE.md)
 
 ### Description
 A container for grouping fields that depend on other field values. Dependencies can be set on any field type or value.
