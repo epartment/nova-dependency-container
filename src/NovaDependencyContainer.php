@@ -36,6 +36,13 @@ class NovaDependencyContainer extends Field
         ]);
     }
 
+    public function dependsOnNotEmpty($field)
+    {
+        return $this->withMeta([
+            'dependencies' => array_merge($this->meta['dependencies'], [['field' => $field, 'notEmpty' => true]])
+        ]);
+    }
+
     /**
      * Allows you to pass component names that should be watched
      * by the container for value changes

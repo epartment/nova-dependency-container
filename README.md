@@ -19,16 +19,29 @@ Install through composer: `composer require epartment/nova-dependency-container`
 Add a new `NovaDependencyContainer` to your Nova Resource:
 
 ```php
-\Laravel\Nova\Fields\Select::make('Name format', 'name_format')
+use \Laravel\Nova\Fields\Select;
+use \Epartment\NovaDependencyContainer\NovaDependencyContainer;
+
+Select::make('Name format', 'name_format')
     ->options([
         0 => 'First Name',
         1 => 'First Name / Last Name',
         2 => 'Full Name'
     ])->displayUsingLabels(),
 
-\Epartment\NovaDependencyContainer\NovaDependencyContainer::make('Dependent settings', [
+NovaDependencyContainer::make('Dependent settings', [
     \Laravel\Nova\Fields\Text::make('First Name', 'first_name')
 ])->dependsOn('name_format', 0)->onlyOnForms(),
+```
+
+### Options
+
+It's possible to rely on just a field without requiring a specific value. This is especially for handling relationshop fields, like a `BelongsTo` field.
+
+```php
+NovaDependencyContainer::make('Dependent settings', [
+    \Laravel\Nova\Fields\Text::make('First Name', 'first_name')
+])->dependsOnNotEmpy('customer')->onlyOnForms(),
 ```
 
 It is also possible to set up multiple dependencies for your container by calling `dependsOn` multiple times on the container.
@@ -38,9 +51,12 @@ You can use any type of field type dependency, i.e. a checkbox:
 ![Demo](https://raw.githubusercontent.com/epartment/nova-dependency-container/master/docs/demo-2.gif)
 
 ```php
-\Laravel\Nova\Fields\Boolean::make('Active', 'active'),
+use \Laravel\Nova\Fields\Boolean;
+use \Epartment\NovaDependencyContainer\NovaDependencyContainer;
 
-\Epartment\NovaDependencyContainer\NovaDependencyContainer::make('Dependent settings', [
+Boolean::make('Active', 'active'),
+
+NovaDependencyContainer::make('Dependent settings', [
     \Laravel\Nova\Fields\Text::make('First Name', 'first_name')
 ])->dependsOn('active', true)->onlyOnForms(),
 ```
@@ -51,13 +67,15 @@ Using the `dependsOnCustomComponent` method on the Dependency Container, you can
 For example using the https://github.com/davidpiesse/nova-toggle field, you can get the name of the component here: https://github.com/davidpiesse/nova-toggle/blob/master/resources/js/field.js#L7 and use it like below:
 
 ```php
-\Davidpiesse\NovaToggle\Toggle::make('Our Option', 'selectable_option')->hideFromIndex(),
+use \Davidpiesse\NovaToggle\Toggle;
+use \Epartment\NovaDependencyContainer\NovaDependencyContainer;
+
+Toggle::make('Our Option', 'selectable_option')->hideFromIndex(),
 
 \Epartment\NovaDependencyContainer\NovaDependencyContainer::make('Dependent settings', [
     \Laravel\Nova\Fields\Trix::make('Details', 'selectable_option_details'),
 ])->dependsOn('selectable_option', true)->dependsOnCustomComponent('form-nova-toggle'),
 ```
-
 
 ### Data handling
 The container it self won't contain any values and will simply pass through the values of the contained fields and their corresponding attributes.

@@ -34,8 +34,14 @@
           var vm = this
           vm.show = true
           this.field.dependencies.forEach(dependency => {
-            if (dependency.value !== this.compareValues[dependency.field]) {
-              vm.show = false
+            if (dependency.notEmpty) {
+              if (this.compareValues[dependency.field] == '' || this.compareValues[dependency.field] == null) {
+                vm.show = false
+              }
+            } else {
+              if (dependency.value !== this.compareValues[dependency.field]) {
+                vm.show = false
+              }
             }
           })
         })
