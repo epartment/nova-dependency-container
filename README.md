@@ -16,7 +16,7 @@ Install through composer: `composer require epartment/nova-dependency-container`
 
 ### Usage
 
-Add a new `NovaDependencyContainer` to your Nova Resource:
+Add a new `NovaDependencyContainer` to your Nova Resource and extend your resource from `Eparment\NovaDependencyContainer\ResourceWithDependencies`
 
 ```php
 use \Epartment\NovaDependencyContainer\NovaDependencyContainer;
