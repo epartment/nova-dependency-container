@@ -19,7 +19,6 @@ Install through composer: `composer require epartment/nova-dependency-container`
 Add a new `NovaDependencyContainer` to your Nova Resource:
 
 ```php
-use \Laravel\Nova\Fields\Select;
 use \Epartment\NovaDependencyContainer\NovaDependencyContainer;
 
 Select::make('Name format', 'name_format')
@@ -40,7 +39,7 @@ It's possible to rely on just a field without requiring a specific value. This i
 
 ```php
 NovaDependencyContainer::make('Dependent settings', [
-    \Laravel\Nova\Fields\Text::make('First Name', 'first_name')
+    Text::make('First Name', 'first_name')
 ])->dependsOnNotEmpy('customer')->onlyOnForms(),
 ```
 
@@ -51,13 +50,11 @@ You can use any type of field type dependency, i.e. a checkbox:
 ![Demo](https://raw.githubusercontent.com/epartment/nova-dependency-container/master/docs/demo-2.gif)
 
 ```php
-use \Laravel\Nova\Fields\Boolean;
-use \Epartment\NovaDependencyContainer\NovaDependencyContainer;
 
 Boolean::make('Active', 'active'),
 
 NovaDependencyContainer::make('Dependent settings', [
-    \Laravel\Nova\Fields\Text::make('First Name', 'first_name')
+    Text::make('First Name', 'first_name')
 ])->dependsOn('active', true)->onlyOnForms(),
 ```
 
@@ -68,12 +65,11 @@ For example using the https://github.com/davidpiesse/nova-toggle field, you can 
 
 ```php
 use \Davidpiesse\NovaToggle\Toggle;
-use \Epartment\NovaDependencyContainer\NovaDependencyContainer;
 
 Toggle::make('Our Option', 'selectable_option')->hideFromIndex(),
 
-\Epartment\NovaDependencyContainer\NovaDependencyContainer::make('Dependent settings', [
-    \Laravel\Nova\Fields\Trix::make('Details', 'selectable_option_details'),
+NovaDependencyContainer::make('Dependent settings', [
+    Trix::make('Details', 'selectable_option_details'),
 ])->dependsOn('selectable_option', true)->dependsOnCustomComponent('form-nova-toggle'),
 ```
 
