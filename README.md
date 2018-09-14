@@ -50,7 +50,6 @@ You can use any type of field type dependency, i.e. a checkbox:
 ![Demo](https://raw.githubusercontent.com/epartment/nova-dependency-container/master/docs/demo-2.gif)
 
 ```php
-
 Boolean::make('Active', 'active'),
 
 NovaDependencyContainer::make('Dependent settings', [
