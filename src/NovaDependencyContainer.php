@@ -3,6 +3,7 @@
 namespace Epartment\NovaDependencyContainer;
 
 use Laravel\Nova\Fields\Field;
+use Laravel\Nova\Http\Requests\NovaRequest;
 
 class NovaDependencyContainer extends Field
 {
@@ -13,7 +14,14 @@ class NovaDependencyContainer extends Field
      */
     public $component = 'nova-dependency-container';
 
-    public function __construct($name, $fields, $attribute = null, $resolveCallback = null)
+    /**
+     * NovaDependencyContainer constructor.
+     *
+     * @param $fields
+     * @param null $attribute
+     * @param null $resolveCallback
+     */
+    public function __construct($fields, $attribute = null, $resolveCallback = null)
     {
         parent::__construct('', $attribute, $resolveCallback);
 
@@ -36,6 +44,12 @@ class NovaDependencyContainer extends Field
         ]);
     }
 
+    /**
+     *
+     *
+     * @param $field
+     * @return NovaDependencyContainer
+     */
     public function dependsOnNotEmpty($field)
     {
         return $this->withMeta([
@@ -78,7 +92,7 @@ class NovaDependencyContainer extends Field
     /**
      * Fills models attributes based on dependency fields
      *
-     * @param \Laravel\Nova\Http\Requests\NovaRequest $request
+     * @param NovaRequest $request
      * @param string $requestAttribute
      * @param object $model
      * @param string $attribute
