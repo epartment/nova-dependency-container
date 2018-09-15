@@ -40,7 +40,7 @@ It's possible to rely on just a field without requiring a specific value. This i
 ```php
 NovaDependencyContainer::make('Dependent settings', [
     Text::make('First Name', 'first_name')
-])->dependsOnNotEmpy('customer')->onlyOnForms(),
+])->dependsOnNotEmpty('customer')->onlyOnForms(),
 ```
 
 It is also possible to set up multiple dependencies for your container by calling `dependsOn` multiple times on the container.
