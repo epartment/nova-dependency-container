@@ -15,7 +15,7 @@ class NovaDependencyContainer extends Field
 
     public function __construct($name, $fields, $attribute = null, $resolveCallback = null)
     {
-        parent::__construct($name, $attribute, $resolveCallback);
+        parent::__construct('', $attribute, $resolveCallback);
 
         $this->withMeta(['fields' => $fields]);
         $this->withMeta(['dependencies' => []]);
