@@ -1,102 +1,94 @@
 <template>
-    <div v-show="show">
-        <div v-for="field in childFields">
-            <component
-                    :is="'form-' + field.component"
-                    :resource-id="resourceId"
-                    :resource-name="resourceName"
-                    :field="field"
-                    :ref="'field-' + field.attribute"
-            />
-        </div>
-    </div>
+	<div v-if="dependenciesSatisfied">
+		<div v-for="childField in field.fields">
+			<component
+				:is="'form-' + childField.component"
+				:resource-id="resourceId"
+				:resource-name="resourceName"
+				:field="childField"
+				:ref="'field-' + childField.attribute"
+			/>
+		</div>
+	</div>
 </template>
 
 <script>
-  import {FormField, HandlesValidationErrors} from 'laravel-nova'
+	import {FormField, HandlesValidationErrors} from 'laravel-nova'
 
-  export default {
-    mixins: [FormField, HandlesValidationErrors],
+	export default {
+		mixins: [FormField, HandlesValidationErrors],
 
-    props: ['resourceName', 'resourceId', 'field'],
+		props: ['resourceName', 'resourceId', 'field'],
 
-    created() {
-      this.field.fields.forEach(f => {
-        f.value = this.field.value[f.attribute]
-      })
-    },
+		mounted() {
+			this.registerDependencyWatchers(this.$root)
+			this.updateDependencyStatus()
+		},
 
-    mounted() {
-      this.field.dependencies.forEach(dependency => {
-        Nova.$on(dependency.field + '-value-changed', (e) => {
-          this.compareValues[dependency.field] = e.value
+		data() {
+			return {
+				dependencyValues: {},
+				dependenciesSatisfied: false,
+			}
+		},
 
-          var vm = this
-          vm.show = true
-          this.field.dependencies.forEach(dependency => {
-            if (dependency.notEmpty) {
-              if (this.compareValues[dependency.field] == '' || this.compareValues[dependency.field] == null) {
-                vm.show = false
-              }
-            } else {
-              if (dependency.value !== this.compareValues[dependency.field]) {
-                vm.show = false
-              }
-            }
-          })
-        })
-      })
+		methods: {
 
-      this.registerValueWatchers(this.$root)
-    },
+			registerDependencyWatchers(root) {
+				root.$children.forEach(component => {
+					if (this.componentIsDependency(component)) {
 
-    data() {
-      return {
-        compareValues: {},
-        show: false
-      }
-    },
+						component.$watch('value', (value) => {
+							this.dependencyValues[component.field.attribute] = value;
+							this.updateDependencyStatus()
+						}, {immediate: true})
 
-    computed: {
-      childFields() {
-        return this.field.fields
-      }
-    },
+						this.dependencyValues[component.field.attribute] = component.field.value;
 
-    methods: {
-      registerValueWatchers (root) {
-        root.$children.forEach(component => {
-          if (component.constructor.options !== undefined && component.constructor.options.name !== undefined) {
-            if (component.constructor.options.name.endsWith('-field') || this.field.depends_custom.includes(component.constructor.options.name)) {
-              component.$watch('value', (value, oldValue) => {
-                Nova.$emit(component.field.attribute + '-value-changed', {
-                  field: component.field,
-                  value: component.value
-                })
-              }, {immediate: true})
+					}
 
-              component.$watch('selectedResource.value', (value, oldValue) => {
-                Nova.$emit(component.field.attribute + '-value-changed', {
-                  field: component.field,
-                  value: component.selectedResource != null ? component.selectedResource.value : component.value
-                })
-              }, {immediate: true})
-            }
-          }
+					this.registerDependencyWatchers(component)
+				})
+			},
 
-          this.registerValueWatchers(component)
-        })
-      },
+			componentIsDependency(component) {
+				if(component.field === undefined) {
+					return false;
+				}
 
-      /**
-       * Fill the given FormData object with the field's internal value.
-       */
-      fill(formData) {
-        this.field.fields.forEach(f => {
-          formData.append(f.attribute, this.$refs['field-' + f.attribute][0].value)
-        })
-      }
+				for (let dependency of this.field.dependencies) {
+					if(component.field.attribute === dependency.field) {
+						return true;
+					}
+				}
 
-    }
-  }
+				return false;
+			},
+
+			updateDependencyStatus() {
+				for (let dependency of this.field.dependencies) {
+					if(dependency.hasOwnProperty('notEmpty') && ! this.dependencyValues[dependency.field]) {
+						this.dependenciesSatisfied = false;
+						return;
+					}
+
+					if(dependency.hasOwnProperty('value') && this.dependencyValues[dependency.field] !== dependency.value) {
+						this.dependenciesSatisfied = false;
+						return;
+					}
+				}
+
+				this.dependenciesSatisfied = true;
+			},
+
+			fill(formData) {
+				if(this.dependenciesSatisfied) {
+					this.$children.forEach(f => {
+						f.fill(formData)
+					})
+				}
+			}
+
+		}
+	}
 </script>

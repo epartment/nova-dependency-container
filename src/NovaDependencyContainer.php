@@ -15,6 +15,11 @@ class NovaDependencyContainer extends Field
     public $component = 'nova-dependency-container';
 
     /**
+     * @var bool
+     */
+    public $showOnIndex = false;
+
+    /**
      * NovaDependencyContainer constructor.
      *
      * @param $fields
@@ -27,7 +32,6 @@ class NovaDependencyContainer extends Field
 
         $this->withMeta(['fields' => $fields]);
         $this->withMeta(['dependencies' => []]);
-        $this->withMeta(['depends_custom' => []]);
     }
 
     /**
@@ -58,20 +62,6 @@ class NovaDependencyContainer extends Field
     }
 
     /**
-     * Allows you to pass component names that should be watched
-     * by the container for value changes
-     *
-     * @param $componentName
-     * @return $this
-     */
-    public function dependsOnCustomComponent($componentName)
-    {
-        return $this->withMeta([
-            'depends_custom' => array_merge($this->meta['depends_custom'], [$componentName])
-        ]);
-    }
-
-    /**
      * Retrieve values of dependency fields
      *
      * @param mixed $resource
@@ -80,29 +70,25 @@ class NovaDependencyContainer extends Field
      */
     protected function resolveAttribute($resource, $attribute)
     {
-        $values = [];
-
         foreach ($this->meta['fields'] as $field) {
-            $values[$field->attribute] = $resource->{$field->attribute};
+            $field->resolve($resource);
         }
 
-        return $values;
+        return [];
     }
 
     /**
-     * Fills models attributes based on dependency fields
+     * Fills the attributes of the model within the container if the dependencies for the container are satisfied.
      *
      * @param NovaRequest $request
      * @param string $requestAttribute
      * @param object $model
      * @param string $attribute
      */
-    protected function fillAttributeFromRequest(\Laravel\Nova\Http\Requests\NovaRequest $request, $requestAttribute, $model, $attribute)
+    protected function fillAttributeFromRequest(NovaRequest $request, $requestAttribute, $model, $attribute)
     {
         foreach ($this->meta['fields'] as $field) {
-            if ($request->exists($field->attribute)) {
-                $model->{$field->attribute} = $request[$field->attribute];
-            }
+            $field->fill($request, $model);
         }
     }
 }

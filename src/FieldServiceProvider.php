@@ -19,14 +19,4 @@ class FieldServiceProvider extends ServiceProvider
             Nova::script('nova-dependency-container', __DIR__.'/../dist/js/field.js');
         });
     }
-
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        //
-    }
 }
