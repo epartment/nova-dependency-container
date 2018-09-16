@@ -65,7 +65,9 @@ NovaDependencyContainer::make(...)
     ->dependsOn('field3', 'value3')
 ```
 
-The fields used as dependencies can by of any of the default Laraven Nova field types. For example a checkbox:
+The fields used as dependencies can by of any of the default Laravel Nova field types.
+
+For example a checkbox:
 
 ![Demo](https://raw.githubusercontent.com/epartment/nova-dependency-container/master/docs/demo-2.gif)
 
