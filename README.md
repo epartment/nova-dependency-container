@@ -60,7 +60,7 @@ NovaDependencyContainer::make([
 
     Text::make('First Name', 'first_name')
 
-])->dependsOnNotEmpy('customer'),
+])->dependsOnNotEmpty('customer'),
 ```
 
 It is also possible to set up multiple dependencies for your container by calling `dependsOn` multiple times on the container.
