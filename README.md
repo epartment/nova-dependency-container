@@ -14,73 +14,63 @@ A container for grouping fields that depend on other field values. Dependencies 
 
 ### Installation
 
-Install through composer: `composer require epartment/nova-dependency-container`
+The package can be installed through Composer.
+
+```bash
+composer require epartment/nova-dependency-container
+```
 
 ### Usage
 
-Add the `Eparment\NovaDependencyContainer\HasDependencies` trait to your Nova Resource.
+1. Add the `Eparment\NovaDependencyContainer\HasDependencies` trait to your Nova Resource.
+2. Add the `Epartment\NovaDependencyContainer\NovaDependencyContainer` to your Nova Resource `fields` method.
 
 ```php
-namespace App\Nova;
-
-use Eparment\NovaDependencyContainer\HasDependencies;
-
 class Page extends Resource
 {
     use HasDependencies;
 
-    ...
+    public function fields(Request $request)
+    {
+        return [
+            
+            Select::make('Name format', 'name_format')->options([
+                0 => 'First Name',
+                1 => 'First Name / Last Name',
+                2 => 'Full Name'
+            ])->displayUsingLabels(),
+
+            NovaDependencyContainer::make([
+
+			    Text::make('First Name', 'first_name')
+
+            ])->dependsOn('name_format', 0),
+
+        ];
+    }
 }
 ```
 
-Add a new `NovaDependencyContainer` to your Nova Resource.
+### Dependencies
+
+The package supports two kinds of dependencies:
+
+1. `->dependsOn('field', 'value')`
+2. `->dependsOnNotEmpy('field')`
+
+These dependencies can be combined by chaining the methods on the `NovaDependencyContainer`:
 
 ```php
-use \Epartment\NovaDependencyContainer\NovaDependencyContainer;
-
-Select::make('Name format', 'name_format')->options([
-    0 => 'First Name',
-    1 => 'First Name / Last Name',
-    2 => 'Full Name'
-])->displayUsingLabels(),
-
-NovaDependencyContainer::make([
-
-    Text::make('First Name', 'first_name')
-
-])->dependsOn('name_format', 0),
+NovaDependencyContainer::make(...)
+    ->dependsOn('field1', 'value1')
+    ->dependsOnNotEmpy('field2')
+    ->dependsOn('field3', 'value3')
 ```
 
-### Options
-
-It's possible to rely on just a field without requiring a specific value. This is especially for handling relationshop fields, like a `BelongsTo` field.
-
-```php
-NovaDependencyContainer::make([
-
-    Text::make('First Name', 'first_name')
-
-])->dependsOnNotEmpy('customer'),
-```
-
-It is also possible to set up multiple dependencies for your container by calling `dependsOn` multiple times on the container.
-
-You can use any type of field type dependency, i.e. a checkbox:
+The fields used as dependencies can by of any of the default Laraven Nova field types. For example a checkbox:
 
 ![Demo](https://raw.githubusercontent.com/epartment/nova-dependency-container/master/docs/demo-2.gif)
 
-```php
-Boolean::make('Active', 'active'),
-
-NovaDependencyContainer::make([
-
-    Text::make('First Name', 'first_name')
-
-])->dependsOn('active', true),
-```
-
-### Data handling
-The container it self won't contain any values and will simply pass through the values of the contained fields and their corresponding attributes.
-
 ### License
+
 The MIT License (MIT). Please see [License File](https://github.com/epartment/nova-dependency-container/blob/master/LICENSE.md) for more information.
