@@ -56,14 +56,14 @@ class Page extends Resource
 The package supports two kinds of dependencies:
 
 1. `->dependsOn('field', 'value')`
-2. `->dependsOnNotEmpy('field')`
+2. `->dependsOnNotEmpty('field')`
 
 These dependencies can be combined by chaining the methods on the `NovaDependencyContainer`:
 
 ```php
 NovaDependencyContainer::make(...)
     ->dependsOn('field1', 'value1')
-    ->dependsOnNotEmpy('field2')
+    ->dependsOnNotEmpty('field2')
     ->dependsOn('field3', 'value3')
 ```
 
