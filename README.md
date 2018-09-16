@@ -41,9 +41,7 @@ class Page extends Resource
             ])->displayUsingLabels(),
 
             NovaDependencyContainer::make([
-
-			    Text::make('First Name', 'first_name')
-
+                Text::make('First Name', 'first_name')
             ])->dependsOn('name_format', 0),
 
         ];
