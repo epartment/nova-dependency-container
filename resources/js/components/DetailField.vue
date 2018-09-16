@@ -30,18 +30,9 @@
 
 			updateDependencyStatus() {
 				for (let dependency of this.field.dependencies) {
-					for (let field of _.values(this.resource.fields)) {
-						if(dependency.field === field.attribute) {
-							if(dependency.hasOwnProperty('notEmpty') && ! field.value) {
-								this.dependenciesSatisfied = false;
-								return;
-							}
-
-							if(dependency.hasOwnProperty('value') && field.value !== dependency.value) {
-								this.dependenciesSatisfied = false;
-								return;
-							}
-						}
+					if(! dependency.satisfied) {
+						this.dependenciesSatisfied = false;
+						return;
 					}
 				}
 
