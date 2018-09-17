@@ -3,6 +3,7 @@
 namespace Epartment\NovaDependencyContainer;
 
 use Laravel\Nova\Fields\Field;
+use Laravel\Nova\Http\Requests\NovaRequest;
 
 class NovaDependencyContainer extends Field
 {
@@ -13,13 +14,24 @@ class NovaDependencyContainer extends Field
      */
     public $component = 'nova-dependency-container';
 
-    public function __construct($name, $fields, $attribute = null, $resolveCallback = null)
+    /**
+     * @var bool
+     */
+    public $showOnIndex = false;
+
+    /**
+     * NovaDependencyContainer constructor.
+     *
+     * @param $fields
+     * @param null $attribute
+     * @param null $resolveCallback
+     */
+    public function __construct($fields, $attribute = null, $resolveCallback = null)
     {
-        parent::__construct($name, $attribute, $resolveCallback);
+        parent::__construct('', $attribute, $resolveCallback);
 
         $this->withMeta(['fields' => $fields]);
         $this->withMeta(['dependencies' => []]);
-        $this->withMeta(['depends_custom' => []]);
     }
 
     /**
@@ -36,6 +48,12 @@ class NovaDependencyContainer extends Field
         ]);
     }
 
+    /**
+     *
+     *
+     * @param $field
+     * @return NovaDependencyContainer
+     */
     public function dependsOnNotEmpty($field)
     {
         return $this->withMeta([
@@ -44,17 +62,22 @@ class NovaDependencyContainer extends Field
     }
 
     /**
-     * Allows you to pass component names that should be watched
-     * by the container for value changes
-     *
-     * @param $componentName
-     * @return $this
+     * @param mixed $resource
+     * @param null $attribute
      */
-    public function dependsOnCustomComponent($componentName)
+    public function resolveForDisplay($resource, $attribute = null)
     {
-        return $this->withMeta([
-            'depends_custom' => array_merge($this->meta['depends_custom'], [$componentName])
-        ]);
+        parent::resolveForDisplay($resource, $attribute);
+
+        foreach ($this->meta['dependencies'] as $index => $dependency) {
+            if(array_key_exists('notEmpty', $dependency) && ! empty($resource->{$dependency['field']})) {
+                $this->meta['dependencies'][$index]['satisfied'] = true;
+            }
+
+            if(array_key_exists('value', $dependency) && $dependency['value'] == $resource->{$dependency['field']}) {
+                $this->meta['dependencies'][$index]['satisfied'] = true;
+            }
+        }
     }
 
     /**
@@ -66,29 +89,25 @@ class NovaDependencyContainer extends Field
      */
     protected function resolveAttribute($resource, $attribute)
     {
-        $values = [];
-
         foreach ($this->meta['fields'] as $field) {
-            $values[$field->attribute] = $resource->{$field->attribute};
+            $field->resolve($resource);
         }
 
-        return $values;
+        return [];
     }
 
     /**
-     * Fills models attributes based on dependency fields
+     * Fills the attributes of the model within the container if the dependencies for the container are satisfied.
      *
-     * @param \Laravel\Nova\Http\Requests\NovaRequest $request
+     * @param NovaRequest $request
      * @param string $requestAttribute
      * @param object $model
      * @param string $attribute
      */
-    protected function fillAttributeFromRequest(\Laravel\Nova\Http\Requests\NovaRequest $request, $requestAttribute, $model, $attribute)
+    protected function fillAttributeFromRequest(NovaRequest $request, $requestAttribute, $model, $attribute)
     {
         foreach ($this->meta['fields'] as $field) {
-            if ($request->exists($field->attribute)) {
-                $model->{$field->attribute} = $request[$field->attribute];
-            }
+            $field->fill($request, $model);
         }
     }
 }
