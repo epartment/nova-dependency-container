@@ -3,6 +3,7 @@
 		<div v-for="childField in field.fields">
 			<component
 				:is="'form-' + childField.component"
+                :errors="errors"
 				:resource-id="resourceId"
 				:resource-name="resourceName"
 				:field="childField"
