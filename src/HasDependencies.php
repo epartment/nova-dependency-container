@@ -20,7 +20,7 @@ trait HasDependencies
         foreach ($fields as $field) {
             if ($field instanceof NovaDependencyContainer) {
                 $availableFields[] = $field;
-                if($this->requestIsAssociateRequest()) {
+                if ($this->doesRouteRequireChildFields()) {
                     $availableFields = array_merge($availableFields, $field->meta['fields']);
                 }
             } else {
@@ -34,8 +34,10 @@ trait HasDependencies
     /**
      * @return bool
      */
-    protected function requestIsAssociateRequest(): bool
+    protected function doesRouteRequireChildFields(): bool
     {
-        return ends_with(Route::currentRouteAction(), 'AssociatableController@index');
+        return ends_with(Route::currentRouteAction(), 'AssociatableController@index')
+            || ends_with(Route::currentRouteAction(), 'ResourceStoreController@handle')
+            || ends_with(Route::currentRouteAction(), 'ResourceUpdateController@handle');
     }
 }
