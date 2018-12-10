@@ -73,10 +73,22 @@ class NovaDependencyContainer extends Field
             if(array_key_exists('notEmpty', $dependency) && ! empty($resource->{$dependency['field']})) {
                 $this->meta['dependencies'][$index]['satisfied'] = true;
             }
+            if (is_iterable($resource->{$dependency['field']})) {
 
-            if(array_key_exists('value', $dependency) && $dependency['value'] == $resource->{$dependency['field']}) {
-                $this->meta['dependencies'][$index]['satisfied'] = true;
-            }
+                $filtered = $resource->{$dependency['field']}->filter(function ($value, $key) use (&$dependency) {
+
+                    return $value->id == $dependency['value'];
+                });
+
+                if (array_key_exists('value', $dependency) && $filtered->isNotEmpty()) {
+                    $this->meta['dependencies'][$index]['satisfied'] = true;
+                }
+            } else {
+            
+                if (array_key_exists('value', $dependency) && $dependency['value'] == $resource->{$dependency['field']}) {
+                    $this->meta['dependencies'][$index]['satisfied'] = true;
+                }
+            }   
         }
     }
 
