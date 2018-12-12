@@ -74,10 +74,17 @@
 					}
 					
 					if (Array.isArray(dependency.value)) {
-						if(dependency.hasOwnProperty('value') && !dependency.value.includes(this.dependencyValues[dependency.field])) {
-							this.dependenciesSatisfied = false;
-							return;
-						}
+                                                if (typeof this.dependencyValues[dependency.field] === 'object'  && this.dependencyValues[dependency.field] !== null) {
+                                                    if(dependency.hasOwnProperty('value') && !dependency.value.includes(this.dependencyValues[dependency.field].id)) {
+                                                            this.dependenciesSatisfied = false;
+                                                            return;
+                                                    }
+                                                } else { 
+                                                    if(dependency.hasOwnProperty('value') && !dependency.value.includes(this.dependencyValues[dependency.field])) {
+                                                            this.dependenciesSatisfied = false;
+                                                            return;
+                                                    }
+                                                }
 					} else {
 						if(dependency.hasOwnProperty('value') && this.dependencyValues[dependency.field] !== dependency.value) {
 							this.dependenciesSatisfied = false;

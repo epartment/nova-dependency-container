@@ -1,6 +1,6 @@
 <?php
 
-namespace Epartment\NovaDependencyContainer;
+namespace Dtannen\NovaDependencyContainer;
 
 use Illuminate\Support\Facades\Route;
 use Laravel\Nova\Fields\FieldCollection;
