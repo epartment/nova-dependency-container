@@ -72,19 +72,22 @@ class NovaDependencyContainer extends Field
         foreach ($this->meta['dependencies'] as $index => $dependency) {
             if(array_key_exists('notEmpty', $dependency) && ! empty($resource->{$dependency['field']})) {
                 $this->meta['dependencies'][$index]['satisfied'] = true;
-            }
-            if (is_iterable($resource->{$dependency['field']})) {
-
+	    }
+	    if (is_object($resource->{$dependency['field']}) && is_array($dependency['value'])) {
+                if (array_key_exists('value', $dependency) && in_array($resource->{$dependency['field']}->id, $dependency['value'])) {
+                    $this->meta['dependencies'][$index]['satisfied'] = true;
+                }
+	    }
+	    else if (is_iterable($resource->{$dependency['field']})) {
                 $filtered = $resource->{$dependency['field']}->filter(function ($value, $key) use (&$dependency) {
 
-                    return $value->id == $dependency['value'];
+                    return $value->id == $dependency['value']->id;
                 });
 
                 if (array_key_exists('value', $dependency) && $filtered->isNotEmpty()) {
                     $this->meta['dependencies'][$index]['satisfied'] = true;
                 }
             } else {
-            
                 if (array_key_exists('value', $dependency) && $dependency['value'] == $resource->{$dependency['field']}) {
                     $this->meta['dependencies'][$index]['satisfied'] = true;
                 }
