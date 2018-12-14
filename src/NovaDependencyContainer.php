@@ -81,7 +81,7 @@ class NovaDependencyContainer extends Field
 	    else if (is_iterable($resource->{$dependency['field']})) {
                 $filtered = $resource->{$dependency['field']}->filter(function ($value, $key) use (&$dependency) {
 
-                    return $value->id == $dependency['value']->id;
+                    return $value->id == $dependency['value'];
                 });
 
                 if (array_key_exists('value', $dependency) && $filtered->isNotEmpty()) {
