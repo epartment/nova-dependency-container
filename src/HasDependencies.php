@@ -8,6 +8,8 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 
 trait HasDependencies
 {
+    protected $childFieldsArr = [];
+    
     /**
      * @param NovaRequest $request
      * @return FieldCollection|\Illuminate\Support\Collection
@@ -21,13 +23,17 @@ trait HasDependencies
             if ($field instanceof NovaDependencyContainer) {
                 $availableFields[] = $field;
                 if ($this->doesRouteRequireChildFields()) {
-                    $availableFields = array_merge($availableFields, $field->meta['fields']);
+                    $this->extractChildFields($field->meta['fields']);
                 }
             } else {
                 $availableFields[] = $field;
             }
         }
 
+        if ($this->childFieldsArr) {
+            $availableFields = array_merge($availableFields, $this->childFieldsArr);
+        }
+        
         return new FieldCollection(array_values($this->filter($availableFields)));
     }
 
@@ -40,4 +46,21 @@ trait HasDependencies
             || ends_with(Route::currentRouteAction(), 'ResourceStoreController@handle')
             || ends_with(Route::currentRouteAction(), 'ResourceUpdateController@handle');
     }
+
+    /**
+     * @param  [array] $childFields [meta fields]
+     * @return void
+     */
+    protected function extractChildFields($childFields)
+    {
+        foreach ($childFields as $childField) {
+            if ($childField instanceof NovaDependencyContainer) {
+                $this->extractChildFields($childField->meta['fields']);
+            } else {
+                if (array_search($childField->attribute, array_column($this->childFieldsArr, 'attribute')) === false) {
+                    $this->childFieldsArr[] = $childField;
+                }
+            }
+        }
+    }    
 }
