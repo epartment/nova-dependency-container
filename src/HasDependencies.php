@@ -58,9 +58,28 @@ trait HasDependencies
                 $this->extractChildFields($childField->meta['fields']);
             } else {
                 if (array_search($childField->attribute, array_column($this->childFieldsArr, 'attribute')) === false) {
+                    $childField = $this->applyRulesForChildFields($childField);
                     $this->childFieldsArr[] = $childField;
                 }
             }
         }
-    }    
+    }
+
+    /**
+     * @param  [array] $childField
+     * @return [array] $childField
+     */
+    protected function applyRulesForChildFields($childField)
+    {
+        if (isset($childField->rules)) {
+            $childField->rules[] = "sometimes:required:".$childField->attribute;
+        }
+        if (isset($childField->creationRules)) {
+            $childField->creationRules[] = "sometimes:required:".$childField->attribute;
+        }
+        if (isset($childField->updateRules)) {
+            $childField->updateRules[] = "sometimes:required:".$childField->attribute;
+        }
+        return $childField;
+    }
 }
