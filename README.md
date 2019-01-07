@@ -51,10 +51,11 @@ class Page extends Resource
 
 ### Dependencies
 
-The package supports two kinds of dependencies:
+The package supports three kinds of dependencies:
 
 1. `->dependsOn('field', 'value')`
 2. `->dependsOnNotEmpty('field')`
+3. `->dependsOnNullOrZero('field')`
 
 These dependencies can be combined by chaining the methods on the `NovaDependencyContainer`:
 

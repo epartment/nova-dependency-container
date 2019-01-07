@@ -62,6 +62,20 @@ class NovaDependencyContainer extends Field
     }
 
     /**
+     * Adds a dependency
+     *
+     * @param $field
+     * @param $value
+     * @return $this
+     */
+    public function dependsOnNullOrZero($field)
+    {
+        return $this->withMeta([
+            'dependencies' => array_merge($this->meta['dependencies'], [['field' => $field, 'nullOrZero' => true]])
+        ]);
+    }
+
+    /**
      * @param mixed $resource
      * @param null $attribute
      */
