@@ -84,9 +84,11 @@
 
 			fill(formData) {
 				if(this.dependenciesSatisfied) {
-					_.each(this.field.fields, field => {
-						field.fill(formData)
-					})
+					_.chain(this.field.fields)
+						.filter(field => _.isFunction(field.fill))
+						.each(field => {
+							field.fill(formData)
+						})
 				}
 			}
 
