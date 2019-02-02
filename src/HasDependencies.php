@@ -82,4 +82,29 @@ trait HasDependencies
         }
         return $childField;
     }
+
+    /**
+     * Validate action fields
+     * Overridden using ActionController & ActionRequest by modifying routes
+     * @return void
+     */
+    public function validateFields() {
+        $availableFields = [];
+        foreach ($this->action()->fields() as $field) {
+            if ($field instanceof NovaDependencyContainer) {
+                $availableFields[] = $field;
+                $this->extractChildFields($field->meta['fields']);
+            } else {
+                $availableFields[] = $field;
+            }
+        }
+
+        if ($this->childFieldsArr) {
+            $availableFields = array_merge($availableFields, $this->childFieldsArr);
+        }
+
+        $this->validate(collect($availableFields)->mapWithKeys(function ($field) {
+            return $field->getCreationRules($this);
+        })->all());
+    }    
 }
