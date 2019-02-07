@@ -14,7 +14,8 @@ trait HasDependencies
      */
     public function availableFields(NovaRequest $request)
     {
-        $fields = $this->fields($request);
+        // Needs to be filtered once to resolve Panels
+        $fields = $this->filter($this->fields($request));
         $availableFields = [];
 
         foreach ($fields as $field) {
@@ -34,10 +35,11 @@ trait HasDependencies
     /**
      * @return bool
      */
-    protected function doesRouteRequireChildFields(): bool
+    protected function doesRouteRequireChildFields() : bool
     {
         return ends_with(Route::currentRouteAction(), 'AssociatableController@index')
             || ends_with(Route::currentRouteAction(), 'ResourceStoreController@handle')
-            || ends_with(Route::currentRouteAction(), 'ResourceUpdateController@handle');
+            || ends_with(Route::currentRouteAction(), 'ResourceUpdateController@handle')
+            || ends_with(Route::currentRouteAction(), 'FieldDestroyController@handle');
     }
 }
