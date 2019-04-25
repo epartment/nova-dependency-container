@@ -92,7 +92,7 @@ trait HasDependencies
      */
     public function validateFields() {
         $availableFields = [];
-        if (!is_null($this->action())) {
+        if (!is_null($this->action()->fields())) {
             foreach ($this->action()->fields() as $field) {
                 if ($field instanceof NovaDependencyContainer) {
                     $availableFields[] = $field;
