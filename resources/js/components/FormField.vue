@@ -73,12 +73,13 @@
 						return;
 					}
 					if(dependency.hasOwnProperty('values')) {
+						this.dependenciesSatisfied = false;
 						for (let value of dependency.values) {
-							if (this.dependencyValues[dependency.field] !== value) {
-								this.dependenciesSatisfied = false;
-								return;
+							if (this.dependencyValues[dependency.field] === value) {
+								this.dependenciesSatisfied = true;
 							}
 						}
+						return;
 					}
 				}
 
