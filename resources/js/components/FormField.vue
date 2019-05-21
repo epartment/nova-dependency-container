@@ -72,10 +72,13 @@
 						this.dependenciesSatisfied = false;
 						return;
 					}
-
-					if(dependency.hasOwnProperty('value') && this.dependencyValues[dependency.field] !== dependency.value) {
-						this.dependenciesSatisfied = false;
-						return;
+					if(dependency.hasOwnProperty('values')) {
+						for (let value of dependency.values) {
+							if (this.dependencyValues[dependency.field] !== value) {
+								this.dependenciesSatisfied = false;
+								return;
+							}
+						}
 					}
 				}
 
