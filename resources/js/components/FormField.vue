@@ -72,10 +72,19 @@
 						this.dependenciesSatisfied = false;
 						return;
 					}
-
-					if(dependency.hasOwnProperty('value') && this.dependencyValues[dependency.field] !== dependency.value) {
-						this.dependenciesSatisfied = false;
-						return;
+					
+					if(dependency.hasOwnProperty('values')) {
+						let valuesSatisfied = false;
+						for (let value of dependency.values) {
+							// Use coercion as form values are always string
+							if (this.dependencyValues[dependency.field] == value) {
+								valuesSatisfied = true;
+							}
+						}
+						if ( ! valuesSatisfied ) {
+							this.dependenciesSatisfied = false;
+							return;
+						}
 					}
 				}
 
