@@ -73,7 +73,8 @@ trait HasDependencies
      */
     protected function applyRulesForChildFields($childField)
     {
-        if (isset($childField->rules)) {
+	$childField->rules[] = "nullable";
+        /* if (isset($childField->rules)) {
             $childField->rules[] = "sometimes:required:".$childField->attribute;
         }
         if (isset($childField->creationRules)) {
@@ -81,7 +82,7 @@ trait HasDependencies
         }
         if (isset($childField->updateRules)) {
             $childField->updateRules[] = "sometimes:required:".$childField->attribute;
-        }
+	} */
         return $childField;
     }
 
