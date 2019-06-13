@@ -1,8 +1,8 @@
 <?php
 
-namespace Epartment\NovaDependencyContainer\Http\Controllers;
+namespace Dtannen\NovaDependencyContainer\Http\Controllers;
 
-use Epartment\NovaDependencyContainer\Http\Requests\ActionRequest;
+use Dtannen\NovaDependencyContainer\Http\Requests\ActionRequest;
 use Illuminate\Routing\Controller;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
