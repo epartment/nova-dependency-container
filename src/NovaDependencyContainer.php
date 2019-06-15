@@ -106,30 +106,14 @@ class NovaDependencyContainer extends Field
      */
     protected function fillAttributeFromRequest(NovaRequest $request, $requestAttribute, $model, $attribute)
     {
-        $callbacks = [];
-
         if (!HasDependencies::doesFieldSatisfyConstraints($this, $request)) {
             return;
         }
 
         foreach ($this->meta[ 'fields' ] as $field) {
 
-            $callbacks[] = $field->fill($request, $model);
+            $field->fill($request, $model);
 
         }
-
-        return function () use ($callbacks) {
-
-            foreach ($callbacks as $callback) {
-
-                if ($callback instanceof \Closure) {
-
-                    call_user_func($callback);
-
-                }
-
-            }
-
-        };
     }
 }
