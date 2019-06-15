@@ -116,7 +116,7 @@ class NovaDependencyContainer extends Field
 
         return function () use ($callbacks) {
 
-            foreach ($callbacks as $key => $callback) {
+            foreach ($callbacks as $callback) {
 
                 if ($callback instanceof \Closure) {
 
