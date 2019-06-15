@@ -107,6 +107,30 @@ class NovaDependencyContainer extends Field
     protected function fillAttributeFromRequest(NovaRequest $request, $requestAttribute, $model, $attribute)
     {
         $callbacks = [];
+        $satisfied = false;
+
+        /**
+         * Check if any constrain has been satisfied otherwise bail the execution,
+         * if user has multiple instances of NovaDependencyContainer::make()
+         * this ensure only the one that has been satisfied is filled
+         */
+        foreach ($this->meta[ 'dependencies' ] as $dependency) {
+
+            $inputValue = $request->input($dependency[ 'field' ]);
+
+            if (array_key_exists('notEmpty', $dependency) && !is_null($inputValue) || $inputValue == $dependency[ 'value' ]) {
+
+                $satisfied = true;
+
+            }
+
+        }
+
+        if (!$satisfied) {
+
+            return;
+
+        }
 
         foreach ($this->meta[ 'fields' ] as $field) {
 
@@ -126,6 +150,6 @@ class NovaDependencyContainer extends Field
 
             }
 
-        };       
+        };
     }
 }
