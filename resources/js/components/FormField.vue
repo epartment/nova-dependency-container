@@ -39,12 +39,16 @@
 				root.$children.forEach(component => {
 					if (this.componentIsDependency(component)) {
 
-						component.$watch('value', (value) => {
+						let attribute = component.field.component === 'nova-fields-belongs-to'
+							? 'selectedResourceId'
+							: 'value'
+
+						component.$watch(attribute, (value) => {
 							this.dependencyValues[component.field.attribute] = value;
 							this.updateDependencyStatus()
 						}, {immediate: true})
 
-						this.dependencyValues[component.field.attribute] = component.field.value;
+						this.dependencyValues[component.field.attribute] = component.field[attribute];
 
 					}
 
