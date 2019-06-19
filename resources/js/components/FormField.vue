@@ -39,8 +39,25 @@
 				root.$children.forEach(component => {
 					if (this.componentIsDependency(component)) {
 
-						component.$watch('value', (value) => {
-							this.dependencyValues[component.field.attribute] = value;
+						let attrname = 'value',
+							attrpath = null;
+
+						if (component.field.component == 'nova-fields-belongs-to') {
+							attrname = 'selectedResource',
+							attrpath = 'value';
+						}
+
+						component.$watch(attrname, (value) => {
+							let result = null
+							if (attrpath) {
+								result = (value && typeof value === 'object'
+										&& value.hasOwnProperty(attrpath))
+									? value[attrpath]
+									: null
+							} else {
+								result = value
+							}
+							this.dependencyValues[component.field.attribute] = result;
 							this.updateDependencyStatus()
 						}, {immediate: true})
 
