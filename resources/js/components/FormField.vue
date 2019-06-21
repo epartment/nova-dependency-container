@@ -38,14 +38,8 @@
 			registerDependencyWatchers(root) {
 				root.$children.forEach(component => {
 					if (this.componentIsDependency(component)) {
-
-						let attrname = 'value',
-							attrpath = null;
-
-						if (component.field.component == 'nova-fields-belongs-to') {
-							attrname = 'selectedResource',
-							attrpath = 'value';
-						}
+						let attrname = this.field.watchable.name,
+							attrpath = this.field.watchable.path;
 
 						component.$watch(attrname, (value) => {
 							let result = null
