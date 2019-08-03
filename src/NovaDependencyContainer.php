@@ -95,25 +95,4 @@ class NovaDependencyContainer extends Field
 
         return [];
     }
-
-    /**
-     * Fills the attributes of the model within the container if the dependencies for the container are satisfied.
-     *
-     * @param NovaRequest $request
-     * @param string $requestAttribute
-     * @param object $model
-     * @param string $attribute
-     */
-    protected function fillAttributeFromRequest(NovaRequest $request, $requestAttribute, $model, $attribute)
-    {
-        if (!HasDependencies::doesFieldSatisfyConstraints($this, $request)) {
-            return;
-        }
-
-        foreach ($this->meta[ 'fields' ] as $field) {
-
-            $field->fill($request, $model);
-
-        }
-    }
 }
