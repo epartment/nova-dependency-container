@@ -33,14 +33,28 @@
 			}
 		},
 
+        created() {
+		    Nova.$on('nova-dependency-container-' + this.field.attribute, this.dependencyChange)
+        },
+
 		methods: {
+
+		    async dependencyChange(options) {
+		        const $this = this
+                if (options.dependTo === $this.field.attribute) {
+                    $this.field.fields = []
+                    options.fields.forEach(option => {
+                        $this.field.fields.push(option)
+                    })
+                }
+            },
 
 			registerDependencyWatchers(root) {
 				root.$children.forEach(component => {
 					if (this.componentIsDependency(component)) {
 
 						component.$watch('value', (value) => {
-							this.dependencyValues[component.field.attribute] = value;
+							this.dependencyValues[component.field.attribute] = (typeof value === 'object' ? value.value : value);
 							this.updateDependencyStatus()
 						}, {immediate: true})
 
