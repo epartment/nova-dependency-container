@@ -52,13 +52,12 @@ class NovaDependencyContainer extends Field
      *
      *
      * @param $field
-     * @param bool $notEmpty
      * @return NovaDependencyContainer
      */
-    public function dependsOnNotEmpty($field, $notEmpty = true)
+    public function dependsOnNotEmpty($field)
     {
         return $this->withMeta([
-            'dependencies' => array_merge($this->meta['dependencies'], [['field' => $field, 'notEmpty' => $notEmpty]])
+            'dependencies' => array_merge($this->meta['dependencies'], [['field' => $field, 'notEmpty' => true]])
         ]);
     }
 
