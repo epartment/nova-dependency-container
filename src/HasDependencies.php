@@ -5,6 +5,7 @@ namespace Epartment\NovaDependencyContainer;
 use Illuminate\Support\Facades\Route;
 use Laravel\Nova\Fields\FieldCollection;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Illuminate\Support\Str;
 
 trait HasDependencies
 {
@@ -43,10 +44,10 @@ trait HasDependencies
      */
     protected function doesRouteRequireChildFields() : bool
     {
-        return ends_with(Route::currentRouteAction(), 'AssociatableController@index')
-            || ends_with(Route::currentRouteAction(), 'ResourceStoreController@handle')
-            || ends_with(Route::currentRouteAction(), 'ResourceUpdateController@handle')
-            || ends_with(Route::currentRouteAction(), 'FieldDestroyController@handle');
+        return Str::endsWith(Route::currentRouteAction(), 'AssociatableController@index')
+            || Str::endsWith(Route::currentRouteAction(), 'ResourceStoreController@handle')
+            || Str::endsWith(Route::currentRouteAction(), 'ResourceUpdateController@handle')
+            || Str::endsWith(Route::currentRouteAction(), 'FieldDestroyController@handle');
     }
 
     /**
