@@ -70,7 +70,7 @@ class NovaDependencyContainer extends Field
         parent::resolveForDisplay($resource, $attribute);
 
         foreach ($this->meta['dependencies'] as $index => $dependency) {
-            if(array_key_exists('notEmpty', $dependency) && ! empty($resource->{$dependency['field']})) {
+            if(array_key_exists('notEmpty', $dependency) && !empty($resource->{$dependency['field']})) {
                 $this->meta['dependencies'][$index]['satisfied'] = true;
 	    }
 	    if (is_object($resource->{$dependency['field']}) && is_array($dependency['value'])) {
