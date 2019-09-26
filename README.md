@@ -14,6 +14,11 @@ A container for grouping fields that depend on other field values. Dependencies 
 
 ### Installation
 
+#### Versions
+
+ - install v1.2.0 for Laravel v5.8 or v6.x and Nova 2.x
+ - install v1.1.2 for Laravel v5.7 and Nova v1.x
+
 The package can be installed through Composer.
 
 ```bash
