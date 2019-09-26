@@ -26,6 +26,8 @@ The package can be installed through Composer.
 composer require epartment/nova-dependency-container
 ```
 
+
+
 ### Usage
 
 1. Add the `Epartment\NovaDependencyContainer\HasDependencies` trait to your Nova Resource.
@@ -55,6 +57,8 @@ class Page extends Resource
 }
 ```
 
+
+
 ### Dependencies
 
 The package supports two kinds of dependencies:
@@ -77,6 +81,42 @@ For example a checkbox:
 
 ![Demo](https://raw.githubusercontent.com/epartment/nova-dependency-container/master/docs/demo-2.gif)
 
+
+
+### BelongsTo dependency
+
+If we follow the example of a *Post model belongsTo a User model*, taken from Novas
+documentation [BelongsTo](https://nova.laravel.com/docs/2.0/resources/relationships.html#belongsto), the dependency
+setup could look like this. We use the singular form of the `belongsTo` model in lower case, in this example `Post` becomes `post`.
+
+```php
+BelongsTo::make('Post'),
+
+NovaDependencyContainer::make([
+    Text::make('Visible')
+])->dependsOn('post', 2) // 
+```
+
+### MorphTo dependency
+
+A similar example from Novas documentation for [MorphTo](https://nova.laravel.com/docs/2.0/resources/relationships.html#morphto), uses 3 Models; `Comment`, `Video` and `Post`.
+`Commentable` becomes `commentable` and the value to depend on are the Models singular form. In this example the dependency container
+will add two additional fields, `Additional Text` and `Visible`, only when the `Post` model is selected.
+
+```php
+MorphTo::make('Commentable')->types([
+    Post::class,
+    Video::class,
+]),
+
+NovaDependencyContainer::make([
+    Text::make('Additional Text', 'additional'),
+    Boolean::make('Visible', 'visible')
+])
+    ->dependsOn('commentable', 'Post') 
+```
+
+
 ### Releases
 
 I'm going to abuse this README for versioning ...
@@ -85,6 +125,8 @@ I'm going to abuse this README for versioning ...
    - fixed support for [BelongsTo](https://nova.laravel.com/docs/1.0/resources/relationships.html#belongsto) and [MorphTo](https://nova.laravel.com/docs/1.0/resources/relationships.html#morphto) fields (@mikaelpopowicz, @dbf)
  - v1.2.0 
    - working version for Laravel 5.8 | 6 and Nova 2.x. (@FastPointGaming, @spaceo, @cdbeaton, @yaroslawww)
+
+
 
 ### License
 
