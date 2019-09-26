@@ -39,7 +39,13 @@
 				root.$children.forEach(component => {
 					if (this.componentIsDependency(component)) {
 
-						component.$watch('value', (value) => {
+						let belongsTo = component.field.component === 'belongs-to-field';
+						let attribute = belongsTo ? 'selectedResource' : 'value';
+
+						component.$watch(attribute, (value) => {
+							if (belongsTo) {
+								value = (value && value.value) || null;
+							}
 							this.dependencyValues[component.field.attribute] = value;
 							this.updateDependencyStatus()
 						}, {immediate: true})
