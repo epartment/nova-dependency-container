@@ -39,11 +39,10 @@
 				root.$children.forEach(component => {
 					if (this.componentIsDependency(component)) {
 
-						let belongsTo = component.field.component === 'belongs-to-field';
-						let attribute = belongsTo ? 'selectedResource' : 'value';
-
+						let attribute = this.findWatchableComponentAttribute(component);
 						component.$watch(attribute, (value) => {
-							if (belongsTo) {
+							// @todo: replace with function to set value and move updateDependencyStatus call
+							if (attribute === 'selectedResource') {
 								value = (value && value.value) || null;
 							}
 							this.dependencyValues[component.field.attribute] = value;
@@ -56,6 +55,21 @@
 
 					this.registerDependencyWatchers(component)
 				})
+			},
+
+			findWatchableComponentAttribute(component) {
+				let attribute;
+				switch(component.field.component) {
+					case 'belongs-to-field':
+						attribute = 'selectedResource';
+						break;
+					case 'morph-to-field':
+						attribute = 'fieldTypeName';
+						break;
+					default:
+						attribute = 'value';
+				}
+				return attribute;
 			},
 
 			componentIsDependency(component) {

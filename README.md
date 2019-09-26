@@ -12,12 +12,13 @@ A container for grouping fields that depend on other field values. Dependencies 
 
 ![Demo](https://raw.githubusercontent.com/epartment/nova-dependency-container/master/docs/demo.gif)
 
-### Installation
 
-#### Versions
+### Versions
 
  - install v1.2.0 for Laravel v5.8 or v6.x and Nova 2.x
  - install v1.1.2 for Laravel v5.7 and Nova v1.x
+
+### Installation
 
 The package can be installed through Composer.
 
@@ -75,6 +76,15 @@ The fields used as dependencies can by of any of the default Laravel Nova field 
 For example a checkbox:
 
 ![Demo](https://raw.githubusercontent.com/epartment/nova-dependency-container/master/docs/demo-2.gif)
+
+### Releases
+
+I'm going to abuse this README for versioning ...
+
+ - v1.2.1
+   - fixed support for [BelongsTo](https://nova.laravel.com/docs/1.0/resources/relationships.html#belongsto) and [MorphTo](https://nova.laravel.com/docs/1.0/resources/relationships.html#morphto) fields (@mikaelpopowicz, @dbf)
+ - v1.2.0 
+   - working version for Laravel 5.8 | 6 and Nova 2.x. (@FastPointGaming, @spaceo, @cdbeaton, @yaroslawww)
 
 ### License
 
