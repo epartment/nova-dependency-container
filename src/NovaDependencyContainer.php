@@ -163,7 +163,8 @@ class NovaDependencyContainer extends Field
     protected function resolveAttribute($resource, $attribute)
     {
         foreach ($this->meta['fields'] as $field) {
-            $field->resolve($resource);
+            // changed to resolveForDisplay(), resolve() will be called when displayCallback is empty.
+            $field->resolveForDisplay($resource);
         }
 
         return [];
