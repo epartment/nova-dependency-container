@@ -2,6 +2,8 @@
 
 namespace Epartment\NovaDependencyContainer;
 
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
@@ -44,12 +46,15 @@ class NovaDependencyContainer extends Field
     public function dependsOn($field, $value)
     {
         return $this->withMeta([
-            'dependencies' => array_merge($this->meta['dependencies'], [['field' => $field, 'value' => $value]])
+            'dependencies' => array_merge($this->meta['dependencies'], [
+                $this->getFieldLayout($field, $value)
+            ])
         ]);
     }
 
+
     /**
-     *
+     * Adds a dependency for notEmpty
      *
      * @param $field
      * @return NovaDependencyContainer
@@ -57,8 +62,34 @@ class NovaDependencyContainer extends Field
     public function dependsOnNotEmpty($field)
     {
         return $this->withMeta([
-            'dependencies' => array_merge($this->meta['dependencies'], [['field' => $field, 'notEmpty' => true]])
+            'dependencies' => array_merge($this->meta['dependencies'], [
+                array_merge($this->getFieldLayout($field), ['notEmpty' => true])
+            ])
         ]);
+    }
+
+    /**
+     * Get layout for a specified field. Dot notation will result in {field}.{property}. If no dot was found it will
+     * result in {field}.{field}, as it was in previous versions by default.
+     *
+     * @param $field
+     * @param $value
+     * @return array
+     */
+    protected function getFieldLayout($field, $value = null)
+    {
+        if (count( ($field = explode('.', $field)) ) === 1) {
+            // backwards compatibility, property becomes field
+            $field[1] = $field[0];
+        }
+        return [
+            // literal form input name
+            'field' => $field[0],
+            // property to compare
+            'property' => $field[1],
+            // value to compare
+            'value' => $value,
+        ];
     }
 
     /**
@@ -70,11 +101,11 @@ class NovaDependencyContainer extends Field
         parent::resolveForDisplay($resource, $attribute);
 
         foreach ($this->meta['dependencies'] as $index => $dependency) {
-            if (array_key_exists('notEmpty', $dependency) && !empty($resource->{$dependency['field']})) {
+            if (array_key_exists('notEmpty', $dependency) && !empty($resource->{$dependency['property']})) {
                 $this->meta['dependencies'][$index]['satisfied'] = true;
             }
 
-            if (array_key_exists('value', $dependency) && $dependency['value'] == $resource->{$dependency['field']}) {
+            if (array_key_exists('value', $dependency) && $dependency['value'] == $resource->{$dependency['property']}) {
                 $this->meta['dependencies'][$index]['satisfied'] = true;
             }
         }
