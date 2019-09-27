@@ -93,6 +93,11 @@
 						return;
 					}
 
+                    if(dependency.hasOwnProperty('nullOrZero') && 0 > [undefined, null, 0, '0'].indexOf(this.dependencyValues[dependency.field]) ) {
+                        this.dependenciesSatisfied = false;
+                        return;
+                    }
+
 					if(dependency.hasOwnProperty('value') && this.dependencyValues[dependency.field] != dependency.value) {
 						this.dependenciesSatisfied = false;
 						return;

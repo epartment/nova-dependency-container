@@ -3,7 +3,6 @@
 namespace Epartment\NovaDependencyContainer;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Log;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
@@ -52,9 +51,8 @@ class NovaDependencyContainer extends Field
         ]);
     }
 
-
     /**
-     * Adds a dependency for notEmpty
+     * Adds a dependency for not empty
      *
      * @param $field
      * @return NovaDependencyContainer
@@ -64,6 +62,22 @@ class NovaDependencyContainer extends Field
         return $this->withMeta([
             'dependencies' => array_merge($this->meta['dependencies'], [
                 array_merge($this->getFieldLayout($field), ['notEmpty' => true])
+            ])
+        ]);
+    }
+
+    /**
+     * Adds a dependency for null or zero (0)
+     *
+     * @param $field
+     * @param $value
+     * @return $this
+     */
+    public function dependsOnNullOrZero($field)
+    {
+        return $this->withMeta([
+            'dependencies' => array_merge($this->meta['dependencies'], [
+                array_merge($this->getFieldLayout($field), ['nullOrZero' => true])
             ])
         ]);
     }
