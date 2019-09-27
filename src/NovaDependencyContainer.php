@@ -57,6 +57,21 @@ class NovaDependencyContainer extends Field
      * @param $field
      * @return NovaDependencyContainer
      */
+    public function dependsOnEmpty($field)
+    {
+        return $this->withMeta([
+            'dependencies' => array_merge($this->meta['dependencies'], [
+                array_merge($this->getFieldLayout($field), ['empty' => true])
+            ])
+        ]);
+    }
+
+    /**
+     * Adds a dependency for not empty
+     *
+     * @param $field
+     * @return NovaDependencyContainer
+     */
     public function dependsOnNotEmpty($field)
     {
         return $this->withMeta([
@@ -115,12 +130,25 @@ class NovaDependencyContainer extends Field
         parent::resolveForDisplay($resource, $attribute);
 
         foreach ($this->meta['dependencies'] as $index => $dependency) {
+
+            if (array_key_exists('empty', $dependency) && empty($resource->{$dependency['property']})) {
+                $this->meta['dependencies'][$index]['satisfied'] = true;
+                continue;
+            }
+            // inverted `empty()`
             if (array_key_exists('notEmpty', $dependency) && !empty($resource->{$dependency['property']})) {
                 $this->meta['dependencies'][$index]['satisfied'] = true;
+                continue;
+            }
+            // inverted
+            if (array_key_exists('nullOrZero', $dependency) && in_array($resource->{$dependency['property']}, [null, 0, '0'], true)) {
+                $this->meta['dependencies'][$index]['satisfied'] = true;
+                continue;
             }
 
             if (array_key_exists('value', $dependency) && $dependency['value'] == $resource->{$dependency['property']}) {
                 $this->meta['dependencies'][$index]['satisfied'] = true;
+                continue;
             }
         }
     }

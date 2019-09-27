@@ -41,7 +41,6 @@
 
 						let attribute = this.findWatchableComponentAttribute(component);
 						component.$watch(attribute, (value) => {
-							// @todo: replace with function to set value and move updateDependencyStatus call
 							if (attribute === 'selectedResource') {
 								value = (value && value.value) || null;
 							}
@@ -88,23 +87,30 @@
 
 			updateDependencyStatus() {
 				for (let dependency of this.field.dependencies) {
-					if(dependency.hasOwnProperty('notEmpty') && ! this.dependencyValues[dependency.field]) {
-						this.dependenciesSatisfied = false;
+
+					let dependencyValue = this.dependencyValues[dependency.field];
+					if(dependency.hasOwnProperty('empty') && !dependencyValue) {
+						this.dependenciesSatisfied = true;
 						return;
 					}
 
-                    if(dependency.hasOwnProperty('nullOrZero') && 0 > [undefined, null, 0, '0'].indexOf(this.dependencyValues[dependency.field]) ) {
-                        this.dependenciesSatisfied = false;
-                        return;
-                    }
+					if(dependency.hasOwnProperty('notEmpty') && dependencyValue) {
+						this.dependenciesSatisfied = true;
+						return;
+					}
 
-					if(dependency.hasOwnProperty('value') && this.dependencyValues[dependency.field] != dependency.value) {
-						this.dependenciesSatisfied = false;
+					if(dependency.hasOwnProperty('nullOrZero') && 1 < [undefined, null, 0, '0'].indexOf(dependencyValue) ) {
+						this.dependenciesSatisfied = true;
+						return;
+					}
+
+					if(dependency.hasOwnProperty('value') && dependencyValue == dependency.value) {
+						this.dependenciesSatisfied = true;
 						return;
 					}
 				}
 
-				this.dependenciesSatisfied = true;
+				this.dependenciesSatisfied = false;
 			},
 
 			fill(formData) {

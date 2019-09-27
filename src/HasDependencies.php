@@ -2,7 +2,6 @@
 
 namespace Epartment\NovaDependencyContainer;
 
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use Laravel\Nova\Fields\FieldCollection;
@@ -18,8 +17,6 @@ trait HasDependencies
      */
     public function availableFields(NovaRequest $request)
     {
-        Log::info('HasDependencies@availableFields');
-
         // Needs to be filtered once to resolve Panels
         $fields = $this->filter($this->fields($request));
         $availableFields = [];
@@ -59,8 +56,6 @@ trait HasDependencies
      */
     protected function extractChildFields($childFields)
     {
-        Log::info('HasDependencies@extractChildFields');
-
         foreach ($childFields as $childField) {
             if ($childField instanceof NovaDependencyContainer) {
                 $this->extractChildFields($childField->meta['fields']);
@@ -79,8 +74,6 @@ trait HasDependencies
      */
     protected function applyRulesForChildFields($childField)
     {
-        Log::info('HasDependencies@applyRulesForChildFields');
-
         if (isset($childField->rules)) {
             $childField->rules[] = "sometimes:required:".$childField->attribute;
         }
