@@ -30,13 +30,13 @@
 
 			updateDependencyStatus() {
 				for (let dependency of this.field.dependencies) {
-					if(! dependency.satisfied) {
-						this.dependenciesSatisfied = false;
+					if(dependency.satisfied) {
+						this.dependenciesSatisfied = true;
 						return;
 					}
 				}
 
-				this.dependenciesSatisfied = true;
+				this.dependenciesSatisfied = false;
 			},
 
 		}

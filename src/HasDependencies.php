@@ -3,6 +3,7 @@
 namespace Epartment\NovaDependencyContainer;
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 use Laravel\Nova\Fields\FieldCollection;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
@@ -43,10 +44,10 @@ trait HasDependencies
      */
     protected function doesRouteRequireChildFields() : bool
     {
-        return ends_with(Route::currentRouteAction(), 'AssociatableController@index')
-            || ends_with(Route::currentRouteAction(), 'ResourceStoreController@handle')
-            || ends_with(Route::currentRouteAction(), 'ResourceUpdateController@handle')
-            || ends_with(Route::currentRouteAction(), 'FieldDestroyController@handle');
+        return Str::endsWith(Route::currentRouteAction(), 'AssociatableController@index')
+            || Str::endsWith(Route::currentRouteAction(), 'ResourceStoreController@handle')
+            || Str::endsWith(Route::currentRouteAction(), 'ResourceUpdateController@handle')
+            || Str::endsWith(Route::currentRouteAction(), 'FieldDestroyController@handle');
     }
 
     /**
@@ -92,8 +93,9 @@ trait HasDependencies
      */
     public function validateFields() {
         $availableFields = [];
-        if ($this->action()->fields()) {
-            foreach ($this->action()->fields() as $field) {
+
+        if ( !empty( ($action_fields = $this->action()->fields()) ) ) {
+            foreach ($action_fields as $field) {
                 if ($field instanceof NovaDependencyContainer) {
                     $availableFields[] = $field;
                     $this->extractChildFields($field->meta['fields']);
