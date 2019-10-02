@@ -5,6 +5,7 @@ namespace Epartment\NovaDependencyContainer;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Illuminate\Support\Facades\Log;
 
 class NovaDependencyContainer extends Field
 {
@@ -163,8 +164,19 @@ class NovaDependencyContainer extends Field
     protected function resolveAttribute($resource, $attribute)
     {
         foreach ($this->meta['fields'] as $field) {
-            // changed to resolveForDisplay(), resolve() will be called when displayCallback is empty.
-            $field->resolveForDisplay($resource);
+
+            switch($field->component) {
+                // callback is set for `resolve` in relation
+                case 'belongs-to-field':
+                case 'morph-to-field':
+                    $field->resolve($resource);
+                    break;
+                // default callbacks are for resolveForDisplay, and if implemented correctly, should call `resolve`
+                // at the end of the chain
+                // @todo: at all packaged incompatible with `resolveForDisplay()`
+                default:
+                    $field->resolveForDisplay($resource);
+            }
         }
 
         return [];
@@ -200,11 +212,23 @@ class NovaDependencyContainer extends Field
 
         $satisfiedCounts = 0;
         foreach ($this->meta['dependencies'] as $index => $dependency) {
-            if (array_key_exists('notEmpty', $dependency) && !empty($request->has($dependency['field']))) {
+
+            if (array_key_exists('empty', $dependency) && empty($request->has($dependency['property']))) {
+                $satisfiedCounts++;
+
+            }
+
+            if (array_key_exists('notEmpty', $dependency) && !empty($request->has($dependency['property']))) {
                 $satisfiedCounts++;
             }
 
-            if (array_key_exists('value', $dependency) && $dependency['value'] == $request->get($dependency['field'])) {
+            // inverted
+            if (array_key_exists('nullOrZero', $dependency) && in_array($request->get($dependency['property']), [null, 0, '0'], true)) {
+                $satisfiedCounts++;
+
+            }
+
+            if (array_key_exists('value', $dependency) && $dependency['value'] == $request->get($dependency['property'])) {
                 $satisfiedCounts++;
             }
         }

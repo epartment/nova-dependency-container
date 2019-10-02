@@ -141,6 +141,9 @@ NovaDependencyContainer::make([
 
 I'm going to abuse this README for versioning ...
 
+ - v1.2.3
+   - Fixed belongs-to/morph-to as nested fields [#80](https://github.com/epartment/nova-dependency-container/issues/80)
+   - Added missing methods in validation rules
  - v1.2.2
  	- fixed fields not resolving when using `displayUsingLabels`, `resolveUsing` or `displayUsing`. (@dbf)
  	- fixed action fields who do not return a collection (@bsormagec)
