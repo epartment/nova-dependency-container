@@ -32,7 +32,7 @@ class ActionController extends Controller {
 	 */
 	public function store(ActionRequest $request) {
 
-		$request->validateFields();
+		$request->validateFields($request);
 
 		return $request->action()->handleRequest($request);
 	}

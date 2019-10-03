@@ -202,7 +202,7 @@ class NovaDependencyContainer extends Field
      * @param NovaRequest $request
      * @return bool
      */
-    protected function isDependenciesSatisfiedForValidationRules(NovaRequest $request)
+    public function areDependenciesSatisfied(NovaRequest $request)
     {
         if (!isset($this->meta['dependencies'])
             || !is_array($this->meta['dependencies'])) {
@@ -214,7 +214,6 @@ class NovaDependencyContainer extends Field
 
             if (array_key_exists('empty', $dependency) && empty($request->has($dependency['property']))) {
                 $satisfiedCounts++;
-
             }
 
             if (array_key_exists('notEmpty', $dependency) && !empty($request->has($dependency['property']))) {
@@ -245,7 +244,7 @@ class NovaDependencyContainer extends Field
     protected function getSituationalRulesSet(NovaRequest $request, string $propertyName = 'rules')
     {
         $fieldsRules = [];
-        if (!$this->isDependenciesSatisfiedForValidationRules($request)
+        if (!$this->areDependenciesSatisfied($request)
             || !isset($this->meta['fields'])
             || !is_array($this->meta['fields'])) {
             return $fieldsRules;

@@ -18,15 +18,19 @@ trait HasDependencies
      */
     public function availableFields(NovaRequest $request)
     {
-        // Needs to be filtered once to resolve Panels
+        // needs to be filtered once to resolve Panels
         $fields = $this->filter($this->fields($request));
         $availableFields = [];
 
         foreach ($fields as $field) {
             if ($field instanceof NovaDependencyContainer) {
                 $availableFields[] = $field;
-                if ($this->doesRouteRequireChildFields() && self::doesFieldSatisfyConstraints($field, $request)) {
-                    $this->extractChildFields($field->meta['fields']);
+                // @todo: this should only be checked on `$request->method() === 'PUT'`, e.g store/update.
+                if($field->areDependenciesSatisfied($request)) {
+                    // check if dependency is sta
+                    if ($this->doesRouteRequireChildFields()) {
+                        $this->extractChildFields($field->meta['fields']);
+                    }
                 }
             } else {
                 $availableFields[] = $field;
@@ -36,38 +40,8 @@ trait HasDependencies
         if ($this->childFieldsArr) {
             $availableFields = array_merge($availableFields, $this->childFieldsArr);
         }
-        
+
         return new FieldCollection(array_values($this->filter($availableFields)));
-    }
-
-    /**
-     * @param \Laravel\Nova\Fields\Field $field
-     * @param \Laravel\Nova\Http\Requests\NovaRequest $request
-     *
-     * @return bool
-     */
-    static function doesFieldSatisfyConstraints(Field $field, NovaRequest $request)
-    {
-
-        /**
-         * Check if any constrain has been satisfied otherwise bail the execution,
-         * if user has multiple instances of NovaDependencyContainer::make()
-         * this ensure only the one that has been satisfied is filled
-         */
-        foreach ($field->meta[ 'dependencies' ] as $dependency) {
-
-            $inputValue = $request->input($dependency[ 'field' ]);
-
-            if (array_key_exists('notEmpty', $dependency) && is_null($inputValue) || $inputValue != $dependency[ 'value' ]) {
-
-                return false;
-
-            }
-
-        }
-
-        return true;
-
     }
 
     /**
@@ -122,13 +96,17 @@ trait HasDependencies
      * Overridden using ActionController & ActionRequest by modifying routes
      * @return void
      */
-    public function validateFields() {
+    public function validateFields(Request $request) {
         $availableFields = [];
         if ( !empty( ($action_fields = $this->action()->fields()) ) ) {
             foreach ($action_fields as $field) {
                 if ($field instanceof NovaDependencyContainer) {
-                    $availableFields[] = $field;
-                    $this->extractChildFields($field->meta['fields']);
+                    // do not add any fields for validation if container is not satisfied
+                    // @todo: this should only be checked on `$request->method() === 'PUT'`, e.g store/update.
+                    if($field->areDependenciesSatisfied($request)) {
+                        $availableFields[] = $field;
+                        $this->extractChildFields($field->meta['fields']);
+                    }
                 } else {
                     $availableFields[] = $field;
                 }
