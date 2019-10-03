@@ -4,6 +4,7 @@ namespace Epartment\NovaDependencyContainer;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
+use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\FieldCollection;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
@@ -24,7 +25,7 @@ trait HasDependencies
         foreach ($fields as $field) {
             if ($field instanceof NovaDependencyContainer) {
                 $availableFields[] = $field;
-                if ($this->doesRouteRequireChildFields()) {
+                if ($this->doesRouteRequireChildFields() && self::doesFieldSatisfyConstraints($field, $request)) {
                     $this->extractChildFields($field->meta['fields']);
                 }
             } else {
@@ -37,6 +38,36 @@ trait HasDependencies
         }
         
         return new FieldCollection(array_values($this->filter($availableFields)));
+    }
+
+    /**
+     * @param \Laravel\Nova\Fields\Field $field
+     * @param \Laravel\Nova\Http\Requests\NovaRequest $request
+     *
+     * @return bool
+     */
+    static function doesFieldSatisfyConstraints(Field $field, NovaRequest $request)
+    {
+
+        /**
+         * Check if any constrain has been satisfied otherwise bail the execution,
+         * if user has multiple instances of NovaDependencyContainer::make()
+         * this ensure only the one that has been satisfied is filled
+         */
+        foreach ($field->meta[ 'dependencies' ] as $dependency) {
+
+            $inputValue = $request->input($dependency[ 'field' ]);
+
+            if (array_key_exists('notEmpty', $dependency) && is_null($inputValue) || $inputValue != $dependency[ 'value' ]) {
+
+                return false;
+
+            }
+
+        }
+
+        return true;
+
     }
 
     /**
@@ -93,7 +124,6 @@ trait HasDependencies
      */
     public function validateFields() {
         $availableFields = [];
-
         if ( !empty( ($action_fields = $this->action()->fields()) ) ) {
             foreach ($action_fields as $field) {
                 if ($field instanceof NovaDependencyContainer) {
@@ -112,5 +142,5 @@ trait HasDependencies
         $this->validate(collect($availableFields)->mapWithKeys(function ($field) {
             return $field->getCreationRules($this);
         })->all());
-    }    
+    }
 }

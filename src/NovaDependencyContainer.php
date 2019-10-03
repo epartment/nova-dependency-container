@@ -5,7 +5,6 @@ namespace Epartment\NovaDependencyContainer;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use Illuminate\Support\Facades\Log;
 
 class NovaDependencyContainer extends Field
 {
