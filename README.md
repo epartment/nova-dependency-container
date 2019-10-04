@@ -141,6 +141,8 @@ NovaDependencyContainer::make([
 
 I'm going to abuse this README for versioning ...
 
+ - v1.2.5
+   - Fixes a problem where Nova can't resolve custom ActionRequest [#82](https://github.com/epartment/nova-dependency-container/issues/82)
  - v1.2.4
  	- Fixes a problem where fields with same names use previous validation rules when used in multiple containers [#81](https://github.com/epartment/nova-dependency-container/issues/81), [#60](https://github.com/epartment/nova-dependency-container/pull/60) (@melewski)
  - v1.2.3

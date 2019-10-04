@@ -96,14 +96,14 @@ trait HasDependencies
      * Overridden using ActionController & ActionRequest by modifying routes
      * @return void
      */
-    public function validateFields(Request $request) {
+    public function validateFields() {
         $availableFields = [];
         if ( !empty( ($action_fields = $this->action()->fields()) ) ) {
             foreach ($action_fields as $field) {
                 if ($field instanceof NovaDependencyContainer) {
                     // do not add any fields for validation if container is not satisfied
                     // @todo: this should only be checked on `$request->method() === 'PUT'`, e.g store/update.
-                    if($field->areDependenciesSatisfied($request)) {
+                    if($field->areDependenciesSatisfied($this)) {
                         $availableFields[] = $field;
                         $this->extractChildFields($field->meta['fields']);
                     }
