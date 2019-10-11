@@ -26,7 +26,8 @@ trait HasDependencies
             if ($field instanceof NovaDependencyContainer) {
                 $availableFields[] = $field;
                 // @todo: this should only be checked on `$request->method() === 'PUT'`, e.g store/update.
-                if($field->areDependenciesSatisfied($request)) {
+                $model = $this->model();
+                if($field->areDependenciesSatisfied($request) || $model->id === null) {
                     // check if dependency is sta
                     if ($this->doesRouteRequireChildFields()) {
                         $this->extractChildFields($field->meta['fields']);
