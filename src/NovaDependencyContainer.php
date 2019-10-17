@@ -243,7 +243,7 @@ class NovaDependencyContainer extends Field
      */
     protected function getSituationalRulesSet(NovaRequest $request, string $propertyName = 'rules')
     {
-        $fieldsRules = [];
+        $fieldsRules = [$this->attribute => []];
         if (!$this->areDependenciesSatisfied($request)
             || !isset($this->meta['fields'])
             || !is_array($this->meta['fields'])) {
