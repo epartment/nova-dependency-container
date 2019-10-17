@@ -50,10 +50,13 @@ trait HasDependencies
      */
     protected function doesRouteRequireChildFields() : bool
     {
-        return Str::endsWith(Route::currentRouteAction(), 'AssociatableController@index')
-            || Str::endsWith(Route::currentRouteAction(), 'ResourceStoreController@handle')
-            || Str::endsWith(Route::currentRouteAction(), 'ResourceUpdateController@handle')
-            || Str::endsWith(Route::currentRouteAction(), 'FieldDestroyController@handle');
+        return Str::endsWith(Route::currentRouteAction(), [
+            'FieldDestroyController@handle',
+            'ResourceUpdateController@handle',
+            'ResourceStoreController@handle',
+            'AssociatableController@index',
+            'MorphableController@index',
+        ]);
     }
 
     /**
