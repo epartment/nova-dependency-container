@@ -4,9 +4,11 @@ namespace Epartment\NovaDependencyContainer;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
+use Illuminate\Support\Collection;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\FieldCollection;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Illuminate\Support\Facades\Log;
 
 trait HasDependencies
 {
@@ -24,7 +26,7 @@ trait HasDependencies
 
         foreach ($fields as $field) {
             if ($field instanceof NovaDependencyContainer) {
-                $availableFields[] = $field;
+                $availableFields[] = $this->filterFieldForRequest($field, $request);
                 // @todo: this should only be checked on `$request->method() === 'PUT'`, e.g store/update.
                 $model = $this->model();
                 if($field->areDependenciesSatisfied($request) || $model->id === null) {
@@ -34,7 +36,7 @@ trait HasDependencies
                     }
                 }
             } else {
-                $availableFields[] = $field;
+                $availableFields[] = $this->filterFieldForRequest($field, $request);
             }
         }
 
@@ -42,7 +44,24 @@ trait HasDependencies
             $availableFields = array_merge($availableFields, $this->childFieldsArr);
         }
 
-        return new FieldCollection(array_values($this->filter($availableFields)));
+        $availableFields = new FieldCollection(array_values($this->filter($availableFields)));
+        return $availableFields;
+    }
+
+    public function filterFieldForRequest($field, NovaRequest $request) {
+        if($request->isUpdateOrUpdateAttachedRequest()) {
+            Log::info((array)$field);
+            return $field->isShownOnUpdate($request, $this) === true ? $field : null;
+        }
+        return $field;
+    }
+
+    /**
+     * @param array $availableFields
+     * @param NovaRequest $request
+     */
+    public function filterFieldsForRequest(Collection $availableFields, NovaRequest $request) {
+        return $availableFields;
     }
 
     /**
