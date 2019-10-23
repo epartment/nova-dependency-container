@@ -129,6 +129,10 @@ class NovaDependencyContainer extends Field
     {
         parent::resolveForDisplay($resource, $attribute);
 
+        foreach ($this->meta['fields'] as $field) {
+            $field->resolveForDisplay($resource);
+        }
+
         foreach ($this->meta['dependencies'] as $index => $dependency) {
 
             if (array_key_exists('empty', $dependency) && empty($resource->{$dependency['property']})) {
@@ -160,25 +164,13 @@ class NovaDependencyContainer extends Field
      * @param string $attribute
      * @return array|mixed
      */
-    protected function resolveAttribute($resource, $attribute)
+    public function resolve($resource, $attribute = null)
     {
+        parent::resolve($resource, $attribute);
+
         foreach ($this->meta['fields'] as $field) {
-
-            switch($field->component) {
-                // callback is set for `resolve` in relation
-                case 'belongs-to-field':
-                case 'morph-to-field':
-                    $field->resolve($resource);
-                    break;
-                // default callbacks are for resolveForDisplay, and if implemented correctly, should call `resolve`
-                // at the end of the chain
-                // @todo: at all packaged incompatible with `resolveForDisplay()`
-                default:
-                    $field->resolveForDisplay($resource);
-            }
+            $field->resolve($resource);
         }
-
-        return [];
     }
 
     /**
