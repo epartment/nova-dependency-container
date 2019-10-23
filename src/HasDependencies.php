@@ -8,6 +8,8 @@ use Illuminate\Support\Collection;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\FieldCollection;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Laravel\Nova\Fields\MorphTo;
+
 use Illuminate\Support\Facades\Log;
 
 trait HasDependencies
@@ -28,9 +30,7 @@ trait HasDependencies
             if ($field instanceof NovaDependencyContainer) {
                 $availableFields[] = $this->filterFieldForRequest($field, $request);
                 // @todo: this should only be checked on `$request->method() === 'PUT'`, e.g store/update.
-                $model = $this->model();
-                if($field->areDependenciesSatisfied($request) || $model->id === null) {
-                    // check if dependency is sta
+                if($field->areDependenciesSatisfied($request) || $this->extractableRequest($request, $this->model())) {
                     if ($this->doesRouteRequireChildFields()) {
                         $this->extractChildFields($field->meta['fields']);
                     }
@@ -44,15 +44,39 @@ trait HasDependencies
             $availableFields = array_merge($availableFields, $this->childFieldsArr);
         }
 
+
         $availableFields = new FieldCollection(array_values($this->filter($availableFields)));
         return $availableFields;
     }
 
-    public function filterFieldForRequest($field, NovaRequest $request) {
-        if($request->isUpdateOrUpdateAttachedRequest()) {
-            Log::info((array)$field);
-            return $field->isShownOnUpdate($request, $this) === true ? $field : null;
+    /**
+     * Check if request needs to extract child fields
+     *
+     * @param NovaRequest $request
+     * @param $model
+     * @return bool
+     */
+    protected function extractableRequest(NovaRequest $request, $model) {
+        // if form was submitted to update (method === 'PUT')
+        if($request->isUpdateOrUpdateAttachedRequest() && strtoupper($request->get('_method', null)) === 'PUT') {
+            return false;
         }
+        // if form was submitted to create and new resource
+        if($request->isCreateOrAttachRequest() && $model->id === null) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * @param $field
+     * @param NovaRequest $request
+     * @return mixed
+     *
+     * @todo: implement
+     */
+    public function filterFieldForRequest($field, NovaRequest $request) {
+        // @todo: filter fields for request, e.g. show/hideOnIndex, create, update or whatever
         return $field;
     }
 
@@ -89,6 +113,7 @@ trait HasDependencies
                 $this->extractChildFields($childField->meta['fields']);
             } else {
                 if (array_search($childField->attribute, array_column($this->childFieldsArr, 'attribute')) === false) {
+                    // @todo: we should not randomly apply rules to child-fields.
                     $childField = $this->applyRulesForChildFields($childField);
                     $this->childFieldsArr[] = $childField;
                 }
@@ -125,7 +150,6 @@ trait HasDependencies
             foreach ($action_fields as $field) {
                 if ($field instanceof NovaDependencyContainer) {
                     // do not add any fields for validation if container is not satisfied
-                    // @todo: this should only be checked on `$request->method() === 'PUT'`, e.g store/update.
                     if($field->areDependenciesSatisfied($this)) {
                         $availableFields[] = $field;
                         $this->extractChildFields($field->meta['fields']);
