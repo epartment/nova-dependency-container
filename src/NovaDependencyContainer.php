@@ -5,6 +5,7 @@ namespace Epartment\NovaDependencyContainer;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Illuminate\Support\Str;
 
 class NovaDependencyContainer extends Field
 {
@@ -122,18 +123,20 @@ class NovaDependencyContainer extends Field
     }
 
     /**
+     * Resolve dependency fields for display
+     *
      * @param mixed $resource
      * @param null $attribute
      */
     public function resolveForDisplay($resource, $attribute = null)
     {
-        parent::resolveForDisplay($resource, $attribute);
-
         foreach ($this->meta['fields'] as $field) {
             $field->resolveForDisplay($resource);
         }
 
         foreach ($this->meta['dependencies'] as $index => $dependency) {
+
+            $this->meta['dependencies'][$index]['satisfied'] = false;
 
             if (array_key_exists('empty', $dependency) && empty($resource->{$dependency['property']})) {
                 $this->meta['dependencies'][$index]['satisfied'] = true;
@@ -150,15 +153,24 @@ class NovaDependencyContainer extends Field
                 continue;
             }
 
-            if (array_key_exists('value', $dependency) && $dependency['value'] == $resource->{$dependency['property']}) {
-                $this->meta['dependencies'][$index]['satisfied'] = true;
-                continue;
+            if (array_key_exists('value', $dependency)) {
+                if($dependency['value'] == $resource->{$dependency['property']}) {
+                    $this->meta['dependencies'][$index]['satisfied'] = true;
+                    continue;
+                }
+                // @todo: quickfix for MorphTo
+                $morphable_attribute = $resource->getAttribute($dependency['property'].'_type');
+                if($morphable_attribute !== null && Str::endsWith($morphable_attribute, '\\'.$dependency['value'])) {
+                    $this->meta['dependencies'][$index]['satisfied'] = true;
+                    continue;
+                }
             }
+
         }
     }
 
     /**
-     * Retrieve values of dependency fields
+     * Resolve dependency fields
      *
      * @param mixed $resource
      * @param string $attribute
@@ -166,24 +178,24 @@ class NovaDependencyContainer extends Field
      */
     public function resolve($resource, $attribute = null)
     {
-        parent::resolve($resource, $attribute);
-
         foreach ($this->meta['fields'] as $field) {
-            $field->resolve($resource);
+            $field->resolve($resource, $attribute);
         }
     }
 
     /**
-     * Fills the attributes of the model within the container if the dependencies for the container are satisfied.
+     * Forward fillInto request for each field in this container
+     *
+     * @trace fill/fillForAction -> fillInto -> *
      *
      * @param NovaRequest $request
-     * @param string $requestAttribute
-     * @param object $model
-     * @param string $attribute
+     * @param $model
+     * @param $attribute
+     * @param null $requestAttribute
      */
-    protected function fillAttributeFromRequest(NovaRequest $request, $requestAttribute, $model, $attribute)
+    public function fillInto(NovaRequest $request, $model, $attribute, $requestAttribute = null)
     {
-        foreach ($this->meta['fields'] as $field) {
+        foreach($this->meta['fields'] as $field) {
             $field->fill($request, $model);
         }
     }
@@ -215,7 +227,6 @@ class NovaDependencyContainer extends Field
             // inverted
             if (array_key_exists('nullOrZero', $dependency) && in_array($request->get($dependency['property']), [null, 0, '0'], true)) {
                 $satisfiedCounts++;
-
             }
 
             if (array_key_exists('value', $dependency) && $dependency['value'] == $request->get($dependency['property'])) {
