@@ -3,7 +3,9 @@
 <br />
 
 ### Releases
-
+ - [v1.2.8](https://github.com/epartment/nova-dependency-container/releases/tag/1.2.8)
+   - Ensure that each field resolves on it's own depending on the situation - PR #90
+   - Fixes #89, #88, #87, #85 and #40 
  - [v1.2.7](https://github.com/epartment/nova-dependency-container/releases/tag/1.2.7)
    - Fix an index error in Nova 2.5.0 where the rules-set array requires a key fields attribute #86
    - Support MorphTo controller #62,#85
