@@ -153,6 +153,23 @@ class NovaDependencyContainer extends Field
                 continue;
             }
 
+            if (is_object($resource->{$dependency['property']}) && is_array($dependency['value'])) {
+                if (array_key_exists('value', $dependency) && in_array($resource->{$dependency['property']}->id, $dependency['value'])) {
+                    $this->meta['dependencies'][$index]['satisfied'] = true;
+                    continue;
+                }
+            }
+
+            if (is_iterable($resource->{$dependency['property']})) {
+                $filtered = $resource->{$dependency['property']}->filter(function ($value, $key) use (&$dependency) {
+                    return $value->id == $dependency['value'];
+                });
+                if (array_key_exists('value', $dependency) && $filtered->isNotEmpty()) {
+                    $this->meta['dependencies'][$index]['satisfied'] = true;
+                    continue;
+                }
+            }
+
             if (array_key_exists('value', $dependency)) {
                 if($dependency['value'] == $resource->{$dependency['property']}) {
                     $this->meta['dependencies'][$index]['satisfied'] = true;
@@ -165,7 +182,6 @@ class NovaDependencyContainer extends Field
                     continue;
                 }
             }
-
         }
     }
 
