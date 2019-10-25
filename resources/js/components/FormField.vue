@@ -124,6 +124,20 @@
 						return;
 					}
 
+                                        if (Array.isArray(dependency.value)) {
+                                            if (typeof this.dependencyValues[dependency.field] === 'object' && dependencyValue !== null) {
+                                                if (dependency.hasOwnProperty('value') && dependency.value.includes(dependencyValue.id)) {
+                                                    this.dependenciesSatisfied = true;
+                                                    return;
+                                                }
+                                            } else {
+                                                if (dependency.hasOwnProperty('value') && dependency.value.includes(dependencyValue)) {
+                                                    this.dependenciesSatisfied = true;
+                                                    return;
+                                                }
+                                            }
+                                        }
+
 					if(dependency.hasOwnProperty('value') && dependencyValue == dependency.value) {
 						this.dependenciesSatisfied = true;
 						return;
