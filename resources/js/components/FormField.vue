@@ -15,7 +15,6 @@
 
 <script>
 	import {FormField, HandlesValidationErrors} from 'laravel-nova'
-	import _ from 'lodash';
 
 	export default {
 		mixins: [FormField, HandlesValidationErrors],
@@ -23,96 +22,19 @@
 		props: ['resourceName', 'resourceId', 'field'],
 
 		mounted() {
-			this.initializeComponent();
+			this.registerDependencyWatchers(this.$root, function() {
+				this.updateDependencyStatus();
+			});
 		},
 
 		data() {
 			return {
 				dependencyValues: {},
 				dependenciesSatisfied: false,
-
-				/**
-				 * compatibility between packages
-				 */
-				packageCompat: {
-					// whitecubes flexible-content
-					// flexible-contents adds fields on the fly by generating a hashed attribute for each added layout (group)
-					// @hash "hash-LayoutName__fieldattribute"
-					packages: {
-						flexibleContent: {
-							// the package component name
-							key: 'flexibleContent',
-							name: 'nova-flexible-content',
-							// return value of `check`
-							is: false,
-							// check if container needs to run in compatMode for `package_name`
-							check: function (container) {
-								let component = container.$parent,
-										is;
-
-								if ((is = typeof component.field !== 'undefined' &&
-										component.field.component === this.name)) {
-
-									container.compatMode = this.key;
-									// gather settings
-									this.settings.group_key = component.group.key;
-								}
-
-								return is;
-							},
-							// settings to gather
-							settings: {
-								group_key: null
-							},
-							// callbacks to execute
-							callbacks: {
-								getRootComponent() {
-									return this.$parent;
-								}
-							}
-						}
-					}
-				},
-
-				compatMode: null
 			}
 		},
 
 		methods: {
-
-			checkCompatability() {
-				_.each(this.packageCompat.packages, function(_package) {
-					_package.check(this);
-				}.bind(this));
-			},
-
-			getCompatibilityCallback(callback_name) {
-				if(this.compatMode !== null) {
-					let callback = this.packageCompat.packages[this.compatMode].callbacks[callback_name];
-					if(typeof callback !== 'undefined') {
-						return callback.bind(this);
-					}
-				}
-				return null;
-			},
-
-			initializeComponent() {
-				// first check if we need to consider any compatibilities
-				this.checkCompatability();
-				// register dependency watchers for any changes
-				this.registerDependencyWatchers(this.getRootComponent(), function() {
-					this.updateDependencyStatus();
-				});
-			},
-
-			getRootComponent() {
-				let callback;
-				if((callback = this.getCompatibilityCallback('getRootComponent')) !== null) {
-					return callback();
-				}
-				// default
-				return this.$root;
-			},
 
 			// @todo: refactor entire watcher procedure, this approach isn't maintainable ..
 			registerDependencyWatchers(root, callback) {
@@ -172,8 +94,9 @@
 				if(component.field === undefined) {
 					return false;
 				}
+
 				for (let dependency of this.field.dependencies) {
-					if(component.field.attribute === (this.field.attribute + dependency.field)) {
+					if(component.field.attribute === dependency.field) {
 						return true;
 					}
 				}
@@ -185,7 +108,7 @@
 			updateDependencyStatus() {
 				for (let dependency of this.field.dependencies) {
 
-					let dependencyValue = this.dependencyValues[(this.field.attribute + dependency.field)];
+					let dependencyValue = this.dependencyValues[dependency.field];
 					if(dependency.hasOwnProperty('empty') && !dependencyValue) {
 						this.dependenciesSatisfied = true;
 						return;

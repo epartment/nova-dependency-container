@@ -9,7 +9,6 @@ use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\FieldCollection;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Fields\MorphTo;
-use Illuminate\Support\Facades\Log;
 
 trait HasDependencies
 {
@@ -28,8 +27,7 @@ trait HasDependencies
         foreach ($fields as $field) {
             if ($field instanceof NovaDependencyContainer) {
                 $availableFields[] = $this->filterFieldForRequest($field, $request);
-                $extractableRequest = $this->extractableRequest($request, $this->model());
-                if($field->areDependenciesSatisfied($request) || $extractableRequest) {
+                if($field->areDependenciesSatisfied($request) || $this->extractableRequest($request, $this->model())) {
                     if ($this->doesRouteRequireChildFields()) {
                         $this->extractChildFields($field->meta['fields']);
                     }
