@@ -114,6 +114,100 @@ When the `Post` resource with `id` 2 is being selected, a `Boolean` field will a
 
 <br />
 
+### BelongsToMany dependency
+
+A [BelongsToMany](https://nova.laravel.com/docs/2.0/resources/relationships.html#belongstomany) setup is simular to that of a [BelongsTo](https://nova.laravel.com/docs/2.0/resources/relationships.html#belongsto).
+
+The `dependsOn` method should be pointing to the name of the intermediate table. If it is called `role_user`, the setup should be 
+
+```php
+BelongsToMany::make('Roles')
+	->fields(function() {
+		return [
+			NovaDependencyContainer::make([
+			    // pivot field rules_all
+			    Boolean::make('Rules All', 'rules_all')
+			])
+			->dependsOn('role_user', 1)
+		]
+	}),
+```
+
+If the pivot field name occurs multiple times, concider using [custom intermediate table models](https://laravel.com/docs/6.x/eloquent-relationships#defining-custom-intermediate-table-models) and define it in the appropiate model relation methods. The only reliable solution I found was using mutators to get/set a field which was being used multiple times. Although this may seem ugly, the events which should be fired on the intermediate model instance, when using an Observer, would work unreliable with every new release of Nova.
+
+> If Nova becomes reliable firing eloquent events on the intermediate table, I will update this examples with a more elegant approach using events instead.
+
+Here is an (ugly) example of a get/set mutator setup for an intermediate table using a pivot field called `type`.
+
+```php
+// model User
+class User ... { 
+   
+   public function roles() {
+   		return $this->belongsToMany->using(RoleUser::class)->withPivot('rules_all');
+   }
+   
+}
+
+// model Role
+class Role ... { 
+   
+   public function users() {
+   		return $this->belongsToMany->using(RoleUser::class)->withPivot('rules_all');
+   }
+   
+}
+
+// intermediate table
+use Illuminate\Database\Eloquent\Relations\Pivot;
+class RoleUser extends Pivot {  
+
+	public function getType1Attribute() {
+	    return $this->type;
+	}
+
+	public function setType1Attribute($value) {
+		$this-type = $value;
+	}
+
+	// ... repeat for as many types as needed
+}
+```
+
+And now for the dependency container.
+
+```php
+->fields(function() {
+	return [
+		NovaDependencyContainer::make([
+		    // pivot field rules_all
+		    Select::make('Type', 'type_1')
+		    	->options([ 
+		    		/* some options */ 
+	    		])
+		    	->displayUsingLabels()
+		])
+		->dependsOn('role_user', 1)
+		,
+	
+		NovaDependencyContainer::make([
+		    // pivot field rules_all
+		    Select::make('Type', 'type_2')
+		    	->options([ 
+		    		/* different options */ 
+	    		])
+		    	->displayUsingLabels()
+		])
+		->dependsOn('role_user', 2)
+		,
+		
+		// .. and so on
+	]
+}),
+```
+
+<br />
+
 ### MorphTo dependency
 
 A similar example taken from Novas documentation for [MorphTo](https://nova.laravel.com/docs/2.0/resources/relationships.html#morphto) is called commentable. It uses 3 Models; `Comment`, `Video` and `Post`. Here `Comment` has the morphable fields `commentable_id` and `commentable_type`

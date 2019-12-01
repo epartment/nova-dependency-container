@@ -78,6 +78,7 @@
 			findWatchableComponentAttribute(component) {
 				let attribute;
 				switch(component.field.component) {
+					case 'belongs-to-many-field':
 					case 'belongs-to-field':
 						attribute = 'selectedResource';
 						break;

@@ -3,6 +3,8 @@
 <br />
 
 ### Releases
+ - [v1.2.9](https://github.com/epartment/nova-dependency-container/releases/tag/1.2.9)
+ 	- Support BelongsToMany field when depending on the seleced resource #52
  - [v1.2.8](https://github.com/epartment/nova-dependency-container/releases/tag/1.2.8)
    - Ensure that each field resolves on it's own depending on the situation - PR #90
    - Fixes #89, #88, #87, #85 and #40 
