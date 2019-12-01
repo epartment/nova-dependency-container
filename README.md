@@ -162,12 +162,14 @@ class Role ... {
 use Illuminate\Database\Eloquent\Relations\Pivot;
 class RoleUser extends Pivot {  
 
+	protected $table 'role_user';
+
 	public function getType1Attribute() {
 	    return $this->type;
 	}
 
 	public function setType1Attribute($value) {
-		$this-type = $value;
+		$this->attributes['type'] = $value;
 	}
 
 	// ... repeat for as many types as needed
