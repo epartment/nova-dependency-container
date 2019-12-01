@@ -3,6 +3,8 @@
 <br />
 
 ### Releases
+ - [v1.2.10](https://github.com/epartment/nova-dependency-container/releases/tag/1.2.10)
+ 	- Fixes a problem with [Whitecubes Flexible Content](https://github.com/whitecube/nova-flexible-content) package where the dependency container would do nothing #93 [whitecube/nova-flexible-content#87](https://github.com/whitecube/nova-flexible-content/issues/87)
  - [v1.2.9](https://github.com/epartment/nova-dependency-container/releases/tag/1.2.9)
  	- Support BelongsToMany field when depending on the seleced resource #52
  - [v1.2.8](https://github.com/epartment/nova-dependency-container/releases/tag/1.2.8)

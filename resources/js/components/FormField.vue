@@ -52,7 +52,7 @@
 								value = (value && value.value) || null;
 							}
 							this.dependencyValues[component.field.attribute] = value;
-							// @todo: changed value as argument for `updateDependencyStatus`
+							// @todo: change value as argument for `updateDependencyStatus`
 							this.updateDependencyStatus()
 						}, {immediate: true});
 
@@ -97,7 +97,8 @@
 				}
 
 				for (let dependency of this.field.dependencies) {
-					if(component.field.attribute === dependency.field) {
+					// #93 compatability with flexible-content, which adds a generated attribute for each field
+					if(component.field.attribute === (this.field.attribute + dependency.field)) {
 						return true;
 					}
 				}
@@ -109,7 +110,8 @@
 			updateDependencyStatus() {
 				for (let dependency of this.field.dependencies) {
 
-					let dependencyValue = this.dependencyValues[dependency.field];
+					// #93 compatability with flexible-content, which adds a generated attribute for each field
+					let dependencyValue = this.dependencyValues[(this.field.attribute + dependency.field)];
 					if(dependency.hasOwnProperty('empty') && !dependencyValue) {
 						this.dependenciesSatisfied = true;
 						return;
