@@ -127,16 +127,14 @@
 						return;
 					}
 
-					if (dependency.hasOwnProperty('value')) {
-						if (dependency.value.hasOwnProperty('not') && dependencyValue !== dependency.value.not) {
-							this.dependenciesSatisfied = true;
-							return;
-						}
+					if (dependency.hasOwnProperty('not') && dependencyValue !== dependency.not) {
+						this.dependenciesSatisfied = true;
+						return;
+					}
 
-						if (dependencyValue == dependency.value) {
-							this.dependenciesSatisfied = true;
-							return;
-						}
+					if (dependency.hasOwnProperty('value') && dependencyValue == dependency.value) {
+						this.dependenciesSatisfied = true;
+						return;
 					}
 				}
 

@@ -62,7 +62,7 @@ class NovaDependencyContainer extends Field
     {
         return $this->withMeta([
             'dependencies' => array_merge($this->meta['dependencies'], [
-                $this->getFieldLayout($field, ['not' => $value])
+                array_merge($this->getFieldLayout($field), ['not' => $value])
             ])
         ]);
     }
@@ -168,11 +168,9 @@ class NovaDependencyContainer extends Field
                 continue;
             }
 
-            if (array_key_exists('value', $dependency) && is_array($dependency['value'])) {
-                if (array_key_exists('not', $dependency['value']) && $resource->{$dependency['property']} != $dependency['value']['not']) {
-                    $this->meta['dependencies'][$index]['satisfied'] = true;
-                    continue;
-                }
+            if (array_key_exists('not', $dependency) && $resource->{$dependency['property']} != $dependency['not']) {
+                $this->meta['dependencies'][$index]['satisfied'] = true;
+                continue;
             }
 
             if (array_key_exists('value', $dependency)) {
@@ -248,6 +246,10 @@ class NovaDependencyContainer extends Field
 
             // inverted
             if (array_key_exists('nullOrZero', $dependency) && in_array($request->get($dependency['property']), [null, 0, '0'], true)) {
+                $satisfiedCounts++;
+            }
+
+            if (array_key_exists('not', $dependency) && $dependency['not'] != $request->get($dependency['property'])) {
                 $satisfiedCounts++;
             }
 
