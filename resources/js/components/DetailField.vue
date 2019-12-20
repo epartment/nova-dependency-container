@@ -1,5 +1,5 @@
 <template>
-	<div v-if="dependenciesSatisfied">
+	<div v-if="dependenciesSatisfied" class="nova-dependency-container">
 		<div v-for="childField in field.fields">
 			<component
 				:is="'detail-' + childField.component"
