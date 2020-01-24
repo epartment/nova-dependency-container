@@ -15,9 +15,15 @@
 
 <script>
 	import {FormField, HandlesValidationErrors} from 'laravel-nova'
+	import {PackageSupport, NovaInlineRelationshipSupport, NovaFlexibleContentSupport} from '../mixin/PackageSupport'
 
 	export default {
-		mixins: [FormField, HandlesValidationErrors],
+		mixins: [FormField, HandlesValidationErrors,
+					// third party package support
+					PackageSupport,
+					NovaInlineRelationshipSupport,
+					NovaFlexibleContentSupport
+		],
 
 		props: ['resourceName', 'resourceId', 'field'],
 
@@ -44,7 +50,8 @@
 
 						// @todo: change `findWatchableComponentAttribute` to return initial state(s) of current dependency.
 						let attribute = this.findWatchableComponentAttribute(component),
-							initial_value = component.field.value; // @note: quick-fix for issue #88
+							// @note: quick-fix for issue #88
+							initial_value = component.field.value;
 
 						component.$watch(attribute, (value) => {
 							// @todo: move to reactive factory
@@ -92,15 +99,26 @@
 			},
 
 			componentIsDependency(component) {
+				let attributeProperty = this.field.settings.attributeProperty;
+
 				if(component.field === undefined) {
 					return false;
 				}
 
 				for (let dependency of this.field.dependencies) {
-					// #93 compatability with flexible-content, which adds a generated attribute for each field
-					if(component.field.attribute === (this.field.attribute + dependency.field)) {
-						return true;
+					// default
+					let dependency_attribute = dependency.field;
+
+					// add compatability with inline relationship
+					if(this.is_nova_inline) {
+						dependency_attribute = this.getNovaInlineAttribute(dependency);
 					}
+					// #93 compatability with flexible-content, which adds a generated attribute for each field
+					if(this.is_nova_flexible_content) {
+						dependency_attribute = this.getNovaFlexibleContentAttribute(dependency);
+					}
+
+					return component.field.attribute === dependency_attribute;
 				}
 
 				return false;
@@ -111,7 +129,18 @@
 				for (let dependency of this.field.dependencies) {
 
 					// #93 compatability with flexible-content, which adds a generated attribute for each field
-					let dependencyValue = this.dependencyValues[(this.field.attribute + dependency.field)];
+					let dependencyValue = {},
+						// default
+						dependencyAttribute = dependency.field;
+
+					if(this.is_nova_flexible_content) {
+						dependencyAttribute = this.getNovaFlexibleContentAttribute(dependency);
+					}
+					if(this.is_nova_inline) {
+						dependencyAttribute = this.getNovaInlineAttribute(dependency);
+					}
+					dependencyValue = this.dependencyValues[dependencyAttribute];
+
 					if(dependency.hasOwnProperty('empty') && !dependencyValue) {
 						this.dependenciesSatisfied = true;
 						return;
