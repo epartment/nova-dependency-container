@@ -116,7 +116,7 @@ When the `Post` resource with `id` 2 is being selected, a `Boolean` field will a
 
 ### BelongsToMany dependency
 
-A [BelongsToMany](https://nova.laravel.com/docs/2.0/resources/relationships.html#belongstomany) setup is simular to that of a [BelongsTo](https://nova.laravel.com/docs/2.0/resources/relationships.html#belongsto).
+A [BelongsToMany](https://nova.laravel.com/docs/2.0/resources/relationships.html#belongstomany) setup is similar to that of a [BelongsTo](https://nova.laravel.com/docs/2.0/resources/relationships.html#belongsto).
 
 The `dependsOn` method should be pointing to the name of the intermediate table. If it is called `role_user`, the setup should be 
 
