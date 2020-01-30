@@ -133,7 +133,7 @@ BelongsToMany::make('Roles')
 	}),
 ```
 
-If the pivot field name occurs multiple times, concider using [custom intermediate table models](https://laravel.com/docs/6.x/eloquent-relationships#defining-custom-intermediate-table-models) and define it in the appropiate model relation methods. The only reliable solution I found was using mutators to get/set a field which was being used multiple times. Although this may seem ugly, the events which should be fired on the intermediate model instance, when using an Observer, would work unreliable with every new release of Nova.
+If the pivot field name occurs multiple times, consider using [custom intermediate table models](https://laravel.com/docs/6.x/eloquent-relationships#defining-custom-intermediate-table-models) and define it in the appropiate model relation methods. The only reliable solution I found was using mutators to get/set a field which was being used multiple times. Although this may seem ugly, the events which should be fired on the intermediate model instance, when using an Observer, would work unreliable with every new release of Nova.
 
 > If Nova becomes reliable firing eloquent events on the intermediate table, I will update this examples with a more elegant approach using events instead.
 
