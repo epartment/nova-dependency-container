@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Illuminate\Support\Str;
+use Laravel\Nova\Fields\FieldCollection;
 
 class NovaDependencyContainer extends Field
 {
@@ -195,9 +196,14 @@ class NovaDependencyContainer extends Field
      */
     public function fillInto(NovaRequest $request, $model, $attribute, $requestAttribute = null)
     {
-        foreach($this->meta['fields'] as $field) {
-            $field->fill($request, $model);
-        }
+        $callableFields = (new FieldCollection($this->meta['fields']))->map->fill($request, $model)
+            ->filter(function ($callback) {
+                return is_callable($callback);
+            })->values();
+
+        return function () use ($callableFields) {
+            $callableFields->each->__invoke();
+        };
     }
 
     /**
