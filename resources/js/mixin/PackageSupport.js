@@ -78,7 +78,9 @@ export const NovaInlineRelationshipSupport = {
 
     computed: {
         is_nova_inline() {
-            return this.$parent.field.component === packages.nova_inline.name;
+            if(this.$parent.field) {
+                return this.$parent.field.component === packages.nova_inline.name;
+            }
         },
     },
 
