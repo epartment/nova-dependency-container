@@ -3,7 +3,7 @@
 		<div v-for="childField in field.fields">
 			<component
 				:is="'form-' + childField.component"
-                :errors="errors"
+				:errors="errors"
 				:resource-id="resourceId"
 				:resource-name="resourceName"
 				:field="childField"
@@ -69,7 +69,7 @@
 					this.registerDependencyWatchers(component)
 				});
 
-				if(callback !== null) {
+				if (callback !== null) {
 					callback.call(this);
 				}
 			},
@@ -92,13 +92,13 @@
 			},
 
 			componentIsDependency(component) {
-				if(component.field === undefined) {
+				if (component.field === undefined) {
 					return false;
 				}
 
 				for (let dependency of this.field.dependencies) {
 					// #93 compatability with flexible-content, which adds a generated attribute for each field
-					if(component.field.attribute === (this.field.attribute + dependency.field)) {
+					if (component.field.attribute === (this.field.attribute + dependency.field)) {
 						return true;
 					}
 				}
@@ -112,22 +112,27 @@
 
 					// #93 compatability with flexible-content, which adds a generated attribute for each field
 					let dependencyValue = this.dependencyValues[(this.field.attribute + dependency.field)];
-					if(dependency.hasOwnProperty('empty') && !dependencyValue) {
+					if (dependency.hasOwnProperty('empty') && !dependencyValue) {
 						this.dependenciesSatisfied = true;
 						return;
 					}
 
-					if(dependency.hasOwnProperty('notEmpty') && dependencyValue) {
+					if (dependency.hasOwnProperty('notEmpty') && dependencyValue) {
 						this.dependenciesSatisfied = true;
 						return;
 					}
 
-					if(dependency.hasOwnProperty('nullOrZero') && 1 < [undefined, null, 0, '0'].indexOf(dependencyValue) ) {
+					if (dependency.hasOwnProperty('nullOrZero') && 1 < [undefined, null, 0, '0'].indexOf(dependencyValue) ) {
 						this.dependenciesSatisfied = true;
 						return;
 					}
 
-					if(dependency.hasOwnProperty('value') && dependencyValue == dependency.value) {
+					if (dependency.hasOwnProperty('not') && dependencyValue !== dependency.not) {
+						this.dependenciesSatisfied = true;
+						return;
+					}
+
+					if (dependency.hasOwnProperty('value') && dependencyValue == dependency.value) {
 						this.dependenciesSatisfied = true;
 						return;
 					}
@@ -137,7 +142,7 @@
 			},
 
 			fill(formData) {
-				if(this.dependenciesSatisfied) {
+				if (this.dependenciesSatisfied) {
 					_.each(this.field.fields, field => {
 						if (field.fill) {
 							field.fill(formData)
