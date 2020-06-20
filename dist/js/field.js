@@ -525,7 +525,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 					if (this.is_nova_inline) {
 						dependency_attribute = this.getNovaInlineAttribute(dependency);
 					}
-					// #93 compatability with flexible-content, which adds a generated attribute for each field
+
 					if (this.is_nova_flexible_content) {
 						dependency_attribute = this.getNovaFlexibleContentAttribute(dependency);
 					}
@@ -587,6 +587,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 					}
 
 					if (dependency.hasOwnProperty('nullOrZero') && 1 < [undefined, null, 0, '0'].indexOf(dependencyValue)) {
+						this.dependenciesSatisfied = true;
+						return;
+					}
+
+					if (dependency.hasOwnProperty('not') && dependencyValue !== dependency.not) {
 						this.dependenciesSatisfied = true;
 						return;
 					}

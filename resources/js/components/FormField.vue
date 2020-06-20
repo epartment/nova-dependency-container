@@ -116,6 +116,7 @@
 
 					if(this.is_nova_flexible_content) {
 						dependency_attribute = this.getNovaFlexibleContentAttribute(dependency);
+					}
 
 					return component.field.attribute === dependency_attribute;
 				}
