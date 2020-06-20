@@ -3,7 +3,7 @@
 		<div v-for="childField in field.fields">
 			<component
 				:is="'form-' + childField.component"
-                :errors="errors"
+				:errors="errors"
 				:resource-id="resourceId"
 				:resource-name="resourceName"
 				:field="childField"
@@ -76,7 +76,7 @@
 					this.registerDependencyWatchers(component)
 				});
 
-				if(callback !== null) {
+				if (callback !== null) {
 					callback.call(this);
 				}
 			},
@@ -101,7 +101,7 @@
 			componentIsDependency(component) {
 				let attributeProperty = this.field.settings.attributeProperty;
 
-				if(component.field === undefined) {
+				if (component.field === undefined) {
 					return false;
 				}
 
@@ -113,10 +113,9 @@
 					if(this.is_nova_inline) {
 						dependency_attribute = this.getNovaInlineAttribute(dependency);
 					}
-					// #93 compatability with flexible-content, which adds a generated attribute for each field
+
 					if(this.is_nova_flexible_content) {
 						dependency_attribute = this.getNovaFlexibleContentAttribute(dependency);
-					}
 
 					return component.field.attribute === dependency_attribute;
 				}
@@ -130,8 +129,8 @@
 
 					// #93 compatability with flexible-content, which adds a generated attribute for each field
 					let dependencyValue = {},
-						// default
-						dependencyAttribute = dependency.field;
+							// default
+							dependencyAttribute = dependency.field;
 
 					if(this.is_nova_flexible_content) {
 						dependencyAttribute = this.getNovaFlexibleContentAttribute(dependency);
@@ -141,22 +140,27 @@
 					}
 					dependencyValue = this.dependencyValues[dependencyAttribute];
 
-					if(dependency.hasOwnProperty('empty') && !dependencyValue) {
+					if (dependency.hasOwnProperty('empty') && !dependencyValue) {
 						this.dependenciesSatisfied = true;
 						return;
 					}
 
-					if(dependency.hasOwnProperty('notEmpty') && dependencyValue) {
+					if (dependency.hasOwnProperty('notEmpty') && dependencyValue) {
 						this.dependenciesSatisfied = true;
 						return;
 					}
 
-					if(dependency.hasOwnProperty('nullOrZero') && 1 < [undefined, null, 0, '0'].indexOf(dependencyValue) ) {
+					if (dependency.hasOwnProperty('nullOrZero') && 1 < [undefined, null, 0, '0'].indexOf(dependencyValue) ) {
 						this.dependenciesSatisfied = true;
 						return;
 					}
 
-					if(dependency.hasOwnProperty('value') && dependencyValue == dependency.value) {
+					if (dependency.hasOwnProperty('not') && dependencyValue !== dependency.not) {
+						this.dependenciesSatisfied = true;
+						return;
+					}
+
+					if (dependency.hasOwnProperty('value') && dependencyValue == dependency.value) {
 						this.dependenciesSatisfied = true;
 						return;
 					}
@@ -166,7 +170,7 @@
 			},
 
 			fill(formData) {
-				if(this.dependenciesSatisfied) {
+				if (this.dependenciesSatisfied) {
 					_.each(this.field.fields, field => {
 						if (field.fill) {
 							field.fill(formData)

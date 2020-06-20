@@ -71,9 +71,10 @@ class Page extends Resource
 The package supports four kinds of dependencies:
 
 1. `->dependsOn('field', 'value')`
-2. `->dependsOnEmpty('field')`
-3. `->dependsOnNotEmpty('field')`
-4. `->dependsOnNullOrZero('field')`
+2. `->dependsOnNot('field', 'value')`
+3. `->dependsOnEmpty('field')`
+4. `->dependsOnNotEmpty('field')`
+5. `->dependsOnNullOrZero('field')`
 
 These dependencies can be combined by chaining the methods on the `NovaDependencyContainer`:
 
@@ -116,7 +117,7 @@ When the `Post` resource with `id` 2 is being selected, a `Boolean` field will a
 
 ### BelongsToMany dependency
 
-A [BelongsToMany](https://nova.laravel.com/docs/2.0/resources/relationships.html#belongstomany) setup is simular to that of a [BelongsTo](https://nova.laravel.com/docs/2.0/resources/relationships.html#belongsto).
+A [BelongsToMany](https://nova.laravel.com/docs/2.0/resources/relationships.html#belongstomany) setup is similar to that of a [BelongsTo](https://nova.laravel.com/docs/2.0/resources/relationships.html#belongsto).
 
 The `dependsOn` method should be pointing to the name of the intermediate table. If it is called `role_user`, the setup should be 
 
@@ -133,7 +134,7 @@ BelongsToMany::make('Roles')
 	}),
 ```
 
-If the pivot field name occurs multiple times, concider using [custom intermediate table models](https://laravel.com/docs/6.x/eloquent-relationships#defining-custom-intermediate-table-models) and define it in the appropiate model relation methods. The only reliable solution I found was using mutators to get/set a field which was being used multiple times. Although this may seem ugly, the events which should be fired on the intermediate model instance, when using an Observer, would work unreliable with every new release of Nova.
+If the pivot field name occurs multiple times, consider using [custom intermediate table models](https://laravel.com/docs/6.x/eloquent-relationships#defining-custom-intermediate-table-models) and define it in the appropiate model relation methods. The only reliable solution I found was using mutators to get/set a field which was being used multiple times. Although this may seem ugly, the events which should be fired on the intermediate model instance, when using an Observer, would work unreliable with every new release of Nova.
 
 > If Nova becomes reliable firing eloquent events on the intermediate table, I will update this examples with a more elegant approach using events instead.
 
