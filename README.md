@@ -6,6 +6,12 @@
 
 <br />
 
+Development branch for compatibility to integrate complex packages:
+- [Flexible Content](https://github.com/whitecube/nova-flexible-content) use default master branch.
+- [Inline Relationship](https://github.com/kirschbaum-development/nova-inline-relationship) use fork/branch [dev-wize-wiz](https://github.com/wize-wiz/nova-inline-relationship/tree/wize-wiz).
+
+<br />
+
 ### Description
 
 A container for grouping fields that depend on other field values. Dependencies can be set on any field type or value.
