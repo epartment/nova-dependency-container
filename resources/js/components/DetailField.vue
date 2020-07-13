@@ -1,14 +1,12 @@
 <template>
-	<div v-if="dependenciesSatisfied">
-		<div v-for="childField in field.fields">
-			<component
+	<div v-if="dependenciesSatisfied" :class="field.class">
+			<component v-for="childField in field.fields"
 				:is="'detail-' + childField.component"
 				:resource-id="resourceId"
 				:resource-name="resourceName"
 				:field="childField"
 				:ref="'field-' + childField.attribute"
 			/>
-		</div>
 	</div>
 </template>
 
