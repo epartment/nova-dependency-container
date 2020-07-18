@@ -4,11 +4,10 @@ namespace Epartment\NovaDependencyContainer;
 
 use Epartment\NovaDependencyContainer\Contracts\NPCS\ReinitAfterCloned;
 use Epartment\NovaDependencyContainer\Concerns\NPCS\HandlesReinitAfterCloned;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Log;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Illuminate\Support\Str;
+use Laravel\Nova\Resource;
 
 class NovaDependencyContainer extends Field
 
@@ -206,11 +205,13 @@ class NovaDependencyContainer extends Field
                     continue;
                 }
 
-                // @todo: quickfix for MorphTo
-                $morphable_attribute = $resource->getAttribute($dependency['property'].'_type');
-                if ($morphable_attribute !== null && Str::endsWith($morphable_attribute, '\\'.$dependency['value'])) {
-                    $this->meta['dependencies'][$index]['satisfied'] = true;
-                    continue;
+                if ($resource instanceof Resource) {
+                    // @todo: quickfix for MorphTo
+                    $morphable_attribute = $resource->getAttribute($dependency['property'] . '_type');
+                    if ($morphable_attribute !== null && Str::endsWith($morphable_attribute, '\\' . $dependency['value'])) {
+                        $this->meta['dependencies'][$index]['satisfied'] = true;
+                        continue;
+                    }
                 }
             }
 
