@@ -13,15 +13,16 @@ use Laravel\Nova\Fields\MorphTo;
 trait HasDependencies
 {
     protected $childFieldsArr = [];
-    
+
     /**
      * @param NovaRequest $request
      * @return FieldCollection|\Illuminate\Support\Collection
      */
     public function availableFields(NovaRequest $request)
     {
+        $method = $this->fieldsMethod($request);
         // needs to be filtered once to resolve Panels
-        $fields = $this->filter($this->fields($request));
+        $fields = $this->filter($this->{$method}($request));
         $availableFields = [];
 
         foreach ($fields as $field) {
