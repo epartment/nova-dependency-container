@@ -131,14 +131,16 @@ trait HasDependencies
 
         if (isset($childField->rules)) {
 
+            logger('COMPONENT  -->  ' . $childField->component);
+            logger('$childField->rules before ... ' . json_encode($childField->rules));
+
             if (gettype($childField->rules) == 'object') {
                 $childField->rules = json_decode(json_encode("sometimes:required:" . $childField->attribute));
             } else {
                 $childField->rules[] = "sometimes:required:" . $childField->attribute;
             }
 
-            logger('COMPONENT  -->  ' . $childField->component);
-            logger('$childField->rules ... ' . json_encode($childField->rules));
+            logger('$childField->rules after ... ' . json_encode($childField->rules));
 
         }
 
