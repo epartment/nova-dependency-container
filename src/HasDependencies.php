@@ -105,6 +105,7 @@ trait HasDependencies
      */
     protected function extractChildFields($childFields)
     {
+        logger('$childFields --> ' . json_encode($childFields));
         foreach ($childFields as $childField) {
             if ($childField instanceof NovaDependencyContainer) {
                 $this->extractChildFields($childField->meta['fields']);
