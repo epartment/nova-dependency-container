@@ -137,11 +137,16 @@ trait HasDependencies
             logger('$childField->attribute ----> ' . $childField->attribute);
             logger('get type .. ' . gettype($childField->rules));
 
-            $childField->rules = (array)$childField->rules;
-            logger(gettype($childField->rules));
+            if(gettype($childField->rules) == 'object'){
+                $childField->rules = "sometimes:required:" . $childField->attribute;
+            }
 
+            logger('$childField->rules  --->  ' . $childField->rules);
 
             $childField->rules[] = "sometimes:required:" . $childField->attribute;
+
+            logger('$childField->rules 2 --->  ' . $childField->rules);
+
         }
         if (isset($childField->creationRules)) {
             $childField->creationRules[] = "sometimes:required:" . $childField->attribute;
