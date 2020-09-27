@@ -125,10 +125,9 @@ trait HasDependencies
      */
     protected function applyRulesForChildFields($childField)
     {
-        logger('$childField: ' . json_encode($childField));
+        logger('IN APPLY RULE CHILD FIELDS ' . json_encode($childField));
 
         if (isset($childField->rules)) {
-            logger('$childField->rules is set: ' . json_encode($childField->attribute));
             $childField->rules[] = "sometimes:required:".$childField->attribute;
         }
         if (isset($childField->creationRules)) {
