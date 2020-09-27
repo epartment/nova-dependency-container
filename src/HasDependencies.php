@@ -135,11 +135,14 @@ trait HasDependencies
             logger('CHILD . ' . json_encode($childField));
             logger('$childField->rules before ... ' . json_encode($childField->rules));
 
-            if (gettype($childField->rules) == 'object') {
-                $childField->rules = json_decode(json_encode("sometimes:required:" . $childField->attribute));
-            } else {
-                $childField->rules[] = "sometimes:required:" . $childField->attribute;
-            }
+//            if (gettype($childField->rules) == 'object') {
+//                $childField->rules = json_decode(json_encode("sometimes:required:" . $childField->attribute));
+//            } else {
+//                $childField->rules[] = "sometimes:required:" . $childField->attribute;
+//            }
+
+            $childField->rules[] = "sometimes:required:" . $childField->attribute;
+
 
             logger('$childField->rules after ... ' . json_encode($childField->rules));
 
