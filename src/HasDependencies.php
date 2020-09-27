@@ -108,10 +108,8 @@ trait HasDependencies
      */
     protected function extractChildFields($childFields)
     {
-        logger('$childFields --> ' . json_encode($childFields));
         foreach ($childFields as $childField) {
 
-            logger('COMPONENT: ' . $childField->component);
             if ($childField instanceof NovaDependencyContainer) {
                 $this->extractChildFields($childField->meta['fields']);
             } else {
@@ -130,27 +128,30 @@ trait HasDependencies
      */
     protected function applyRulesForChildFields($childField)
     {
-        logger('IN APPLY RULE CHILD FIELDS ' . json_encode($childField));
 
         if (isset($childField->rules)) {
-            logger('RULES IS SET AND IS: ' . json_encode($childField->rules));
-            logger('$childField->attribute ----> ' . $childField->attribute);
-            logger('get type .. ' . gettype($childField->rules));
-
-            if(gettype($childField->rules) == 'object'){
-                logger('object');
+            if (gettype($childField->rules) == 'object') {
                 $childField->rules = json_decode(json_encode("sometimes:required:" . $childField->attribute));
-            }else{
+            } else {
                 $childField->rules[] = "sometimes:required:" . $childField->attribute;
             }
-
-
         }
+
         if (isset($childField->creationRules)) {
-            $childField->creationRules[] = "sometimes:required:" . $childField->attribute;
+
+            if (gettype($childField->rules) == 'object') {
+                $childField->creationRules = json_decode(json_encode("sometimes:required:" . $childField->attribute));
+            } else {
+                $childField->creationRules[] = "sometimes:required:" . $childField->attribute;
+            }
         }
+
         if (isset($childField->updateRules)) {
-            $childField->updateRules[] = "sometimes:required:" . $childField->attribute;
+            if (gettype($childField->rules) == 'object') {
+                $childField->updateRules = json_decode(json_encode("sometimes:required:" . $childField->attribute));
+            } else {
+                $childField->updateRules[] = "sometimes:required:" . $childField->attribute;
+            }
         }
         return $childField;
     }
