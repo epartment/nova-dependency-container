@@ -130,6 +130,7 @@ trait HasDependencies
         logger('IN APPLY RULE CHILD FIELDS ' . json_encode($childField));
 
         if (isset($childField->rules)) {
+            logger('RULES IS SET AND IS: ' . json_encode($childField->rules));
             $childField->rules[] = "sometimes:required:".$childField->attribute;
         }
         if (isset($childField->creationRules)) {
