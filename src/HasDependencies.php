@@ -13,7 +13,7 @@ use Laravel\Nova\Fields\MorphTo;
 trait HasDependencies
 {
     protected $childFieldsArr = [];
-    
+
     /**
      * @param NovaRequest $request
      * @return FieldCollection|\Illuminate\Support\Collection
@@ -27,7 +27,7 @@ trait HasDependencies
         foreach ($fields as $field) {
             if ($field instanceof NovaDependencyContainer) {
                 $availableFields[] = $this->filterFieldForRequest($field, $request);
-                if($field->areDependenciesSatisfied($request) || $this->extractableRequest($request, $this->model())) {
+                if ($field->areDependenciesSatisfied($request) || $this->extractableRequest($request, $this->model())) {
                     if ($this->doesRouteRequireChildFields()) {
                         $this->extractChildFields($field->meta['fields']);
                     }
@@ -53,13 +53,14 @@ trait HasDependencies
      * @param $model
      * @return bool
      */
-    protected function extractableRequest(NovaRequest $request, $model) {
+    protected function extractableRequest(NovaRequest $request, $model)
+    {
         // if form was submitted to update (method === 'PUT')
-        if($request->isUpdateOrUpdateAttachedRequest() && strtoupper($request->get('_method', null)) === 'PUT') {
+        if ($request->isUpdateOrUpdateAttachedRequest() && strtoupper($request->get('_method', null)) === 'PUT') {
             return false;
         }
         // if form was submitted to create and new resource
-        if($request->isCreateOrAttachRequest() && $model->id === null) {
+        if ($request->isCreateOrAttachRequest() && $model->id === null) {
             return false;
         }
         return true;
@@ -72,7 +73,8 @@ trait HasDependencies
      *
      * @todo: implement
      */
-    public function filterFieldForRequest($field, NovaRequest $request) {
+    public function filterFieldForRequest($field, NovaRequest $request)
+    {
         // @todo: filter fields for request, e.g. show/hideOnIndex, create, update or whatever
         return $field;
     }
@@ -81,14 +83,15 @@ trait HasDependencies
      * @param array $availableFields
      * @param NovaRequest $request
      */
-    public function filterFieldsForRequest(Collection $availableFields, NovaRequest $request) {
+    public function filterFieldsForRequest(Collection $availableFields, NovaRequest $request)
+    {
         return $availableFields;
     }
 
     /**
      * @return bool
      */
-    protected function doesRouteRequireChildFields() : bool
+    protected function doesRouteRequireChildFields(): bool
     {
         return Str::endsWith(Route::currentRouteAction(), [
             'FieldDestroyController@handle',
@@ -134,13 +137,17 @@ trait HasDependencies
             logger('$childField->attribute ----> ' . $childField->attribute);
             logger('get type .. ' . gettype($childField->rules));
 
-            $childField->rules[] = "sometimes:required:".$childField->attribute;
+            $childField->rules = (array)$childField->rules;
+            logger(gettype($childField->rules));
+
+
+            $childField->rules[] = "sometimes:required:" . $childField->attribute;
         }
         if (isset($childField->creationRules)) {
-            $childField->creationRules[] = "sometimes:required:".$childField->attribute;
+            $childField->creationRules[] = "sometimes:required:" . $childField->attribute;
         }
         if (isset($childField->updateRules)) {
-            $childField->updateRules[] = "sometimes:required:".$childField->attribute;
+            $childField->updateRules[] = "sometimes:required:" . $childField->attribute;
         }
         return $childField;
     }
@@ -150,13 +157,14 @@ trait HasDependencies
      * Overridden using ActionController & ActionRequest by modifying routes
      * @return void
      */
-    public function validateFields() {
+    public function validateFields()
+    {
         $availableFields = [];
-        if ( !empty( ($action_fields = $this->action()->fields()) ) ) {
+        if (!empty(($action_fields = $this->action()->fields()))) {
             foreach ($action_fields as $field) {
                 if ($field instanceof NovaDependencyContainer) {
                     // do not add any fields for validation if container is not satisfied
-                    if($field->areDependenciesSatisfied($this)) {
+                    if ($field->areDependenciesSatisfied($this)) {
                         $availableFields[] = $field;
                         $this->extractChildFields($field->meta['fields']);
                     }
