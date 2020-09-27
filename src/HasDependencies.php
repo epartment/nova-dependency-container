@@ -132,6 +132,7 @@ trait HasDependencies
         if (isset($childField->rules)) {
 
             logger('COMPONENT  -->  ' . $childField->component);
+            logger('CHILD . ' . json_encode($childField));
             logger('$childField->rules before ... ' . json_encode($childField->rules));
 
             if (gettype($childField->rules) == 'object') {
