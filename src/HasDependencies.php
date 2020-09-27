@@ -133,6 +133,7 @@ trait HasDependencies
             logger('RULES IS SET AND IS: ' . json_encode($childField->rules));
             logger('$childField->attribute ----> ' . $childField->attribute);
             logger('get type .. ' . gettype($childField->rules));
+
             $childField->rules[] = "sometimes:required:".$childField->attribute;
         }
         if (isset($childField->creationRules)) {
