@@ -139,7 +139,7 @@ trait HasDependencies
 
             if(gettype($childField->rules) == 'object'){
                 logger('object');
-                $childField->rules[] = json_decode(json_encode($childField->rules));
+                $childField->rules = json_decode(json_encode($childField->rules));
             }
 
             $childField->rules[] = "sometimes:required:" . $childField->attribute;
