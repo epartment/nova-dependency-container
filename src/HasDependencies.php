@@ -130,18 +130,9 @@ trait HasDependencies
     {
 
         if (isset($childField->rules)) {
-
-            logger('COMPONENT  -->  ' . $childField->component);
-            logger('CHILD . ' . json_encode($childField));
-            logger('$childField->rules before ... ' . json_encode($childField->rules));
-
             if (gettype($childField->rules) == 'array') {
                 $childField->rules[] = "sometimes:required:" . $childField->attribute;
-//                $childField->rules = json_decode(json_encode("sometimes:required:" . $childField->attribute));
             }
-
-            logger('$childField->rules after ... ' . json_encode($childField->rules));
-
         }
 
         if (isset($childField->creationRules)) {
