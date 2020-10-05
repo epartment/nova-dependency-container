@@ -22,9 +22,10 @@
 		props: ['resourceName', 'resourceId', 'field'],
 
 		mounted() {
+			this.isNestedForm = this.$parent.$parent.$options.name == 'form-nested-form';
 			this.registerDependencyWatchers(this.$root, function() {
 				this.updateDependencyStatus();
-			});
+			}, true);
 		},
 
 		data() {
@@ -37,11 +38,11 @@
 		methods: {
 
 			// @todo: refactor entire watcher procedure, this approach isn't maintainable ..
-			registerDependencyWatchers(root, callback) {
+			registerDependencyWatchers(root, callback, onMounted) {
 				callback = callback || null;
+				root = onMounted && this.isNestedForm ? this.$parent.$parent : root;
 				root.$children.forEach(component => {
 					if (this.componentIsDependency(component)) {
-
 						// @todo: change `findWatchableComponentAttribute` to return initial state(s) of current dependency.
 						let attribute = this.findWatchableComponentAttribute(component),
 							initial_value = component.field.value; // @note: quick-fix for issue #88
@@ -66,7 +67,7 @@
 						this.dependencyValues[component.field.attribute] = initial_value;
 					}
 
-					this.registerDependencyWatchers(component)
+					this.registerDependencyWatchers(component, null, false)
 				});
 
 				if (callback !== null) {
@@ -76,13 +77,17 @@
 
 			// @todo: not maintainable, move to factory
 			findWatchableComponentAttribute(component) {
+
 				let attribute;
 				switch(component.field.component) {
 					case 'belongs-to-many-field':
 					case 'belongs-to-field':
+					case 'nested-form-belongs-to-many-field':
+					case 'nested-form-belongs-to-field':
 						attribute = 'selectedResource';
 						break;
 					case 'morph-to-field':
+					case 'nested-form-morph-to-field':
 						attribute = 'fieldTypeName';
 						break;
 					default:
@@ -98,7 +103,14 @@
 
 				for (let dependency of this.field.dependencies) {
 					// #93 compatability with flexible-content, which adds a generated attribute for each field
-					if (component.field.attribute === (this.field.attribute + dependency.field)) {
+					let attributeToCheck;
+					if(this.isNestedForm) {
+						attributeToCheck = this.field.attribute + '[' + dependency.field + ']';
+					} else {
+						attributeToCheck = this.field.attribute + dependency.field;
+					}
+					
+					if (component.field.attribute === attributeToCheck) {
 						return true;
 					}
 				}
@@ -110,8 +122,15 @@
 			updateDependencyStatus() {
 				for (let dependency of this.field.dependencies) {
 
+					let attribute;
+					if(this.isNestedForm) {
+						attribute = this.field.attribute + '[' + dependency.field + ']';
+					} else {
+						attribute = this.field.attribute + dependency.field;
+					}
+
 					// #93 compatability with flexible-content, which adds a generated attribute for each field
-					let dependencyValue = this.dependencyValues[(this.field.attribute + dependency.field)];
+					let dependencyValue = this.dependencyValues[attribute];
 					if (dependency.hasOwnProperty('empty') && !dependencyValue) {
 						this.dependenciesSatisfied = true;
 						return;
@@ -145,7 +164,17 @@
 				if (this.dependenciesSatisfied) {
 					_.each(this.field.fields, field => {
 						if (field.fill) {
-							field.fill(formData)
+							if(this.isNestedForm) {
+                                field.fill(formData);
+                                for (const [key, value] of formData.entries()) {
+                                    if (key == field.attribute) {
+                                        formData.append(`${this.field.attribute}[${field.attribute}]`, value)
+                                        formData.delete(key)
+                                    }
+                                }
+                            } else {
+                                field.fill(formData);
+                            }
 						}
 					})
 				}
