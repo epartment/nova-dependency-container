@@ -8,6 +8,7 @@
 				:resource-name="resourceName"
 				:field="childField"
 				:ref="'field-' + childField.attribute"
+				:show-help-text="childField.helpText != null"
 			/>
 		</div>
 	</div>
