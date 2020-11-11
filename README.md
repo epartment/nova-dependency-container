@@ -234,6 +234,24 @@ NovaDependencyContainer::make([
 
 <br />
 
+### Relationship Fields Inside Container
+
+If you want to use a relationship field inside a dependancy container, add the `HasDependencies` trait on the resource.
+
+```php
+use HasDependencies
+
+Select::make('Select an Option', 'select_option')
+    ->options([
+        'option_1' => 'Option 1',
+        'option_2' => 'Option 2',
+    ]),
+    
+NovaDependencyContainer::make([
+    BelongsTo::make('Relationship', 'relationship', Relationship::class),
+])->dependsOn('select_option', 'option_1'),
+```
+
 ### License
 
 The MIT License (MIT). Please see [License File](https://github.com/epartment/nova-dependency-container/blob/master/LICENSE.md) for more information.
