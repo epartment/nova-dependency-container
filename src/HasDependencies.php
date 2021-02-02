@@ -9,6 +9,7 @@ use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\FieldCollection;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Fields\MorphTo;
+use Laravel\Nova\Http\Requests\ActionRequest;
 
 trait HasDependencies
 {
@@ -141,7 +142,7 @@ trait HasDependencies
      * Overridden using ActionController & ActionRequest by modifying routes
      * @return void
      */
-    public function validateFields() {
+    public function validateFields($request) {
         $availableFields = [];
         if ( !empty( ($action_fields = $this->action()->fields()) ) ) {
             foreach ($action_fields as $field) {
