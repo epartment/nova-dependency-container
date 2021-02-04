@@ -9,11 +9,12 @@ use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\FieldCollection;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Fields\MorphTo;
+use Laravel\Nova\Http\Requests\ActionRequest;
 
 trait HasDependencies
 {
     protected $childFieldsArr = [];
-    
+
     /**
      * @param NovaRequest $request
      * @return FieldCollection|\Illuminate\Support\Collection
@@ -139,9 +140,10 @@ trait HasDependencies
     /**
      * Validate action fields
      * Overridden using ActionController & ActionRequest by modifying routes
+     * @param  \Laravel\Nova\Http\Requests\ActionRequest  $request
      * @return void
      */
-    public function validateFields() {
+    public function validateFields(ActionRequest $request = null) {
         $availableFields = [];
         if ( !empty( ($action_fields = $this->action()->fields()) ) ) {
             foreach ($action_fields as $field) {
