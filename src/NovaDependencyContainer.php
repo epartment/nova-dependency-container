@@ -150,6 +150,7 @@ class NovaDependencyContainer extends Field
         }
 
         foreach ($this->meta['dependencies'] as $index => $dependency) {
+
             $this->meta['dependencies'][$index]['satisfied'] = false;
 
             $value = data_get($resource, str_replace('->', '.', $dependency['property']));
@@ -186,6 +187,7 @@ class NovaDependencyContainer extends Field
                     continue;
                 }
             }
+
         }
     }
 
