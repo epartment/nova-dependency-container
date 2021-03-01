@@ -1,26 +1,25 @@
 <?php
 
-namespace Epartment\NovaDependencyContainer\Http\Requests;
+namespace Epartment\NovaDependencyContainer;
 
-use Epartment\NovaDependencyContainer\HasDependencies;
-use Laravel\Nova\Http\Requests\ActionRequest as NovaActionRequest;
-
-class ActionRequest extends NovaActionRequest {
-
-    use HasDependencies;
+trait ActionHasDependencies
+{
+    use HasChildFields;
 
     /**
-     * Handles child fields.
+     * Validate action fields
      *
+     * @param  \Laravel\Nova\Http\Requests\ActionRequest  $request
      * @return void
      */
-    public function validateFields() {
+    public function validateFields(ActionRequest $request)
+    {
         $availableFields = [];
 
-        foreach ($this->action()->fields() as $field) {
+        foreach ($request->action()->fields() as $field) {
             if ($field instanceof NovaDependencyContainer) {
                 // do not add any fields for validation if container is not satisfied
-                if ($field->areDependenciesSatisfied($this)) {
+                if($field->areDependenciesSatisfied($this)) {
                     $availableFields[] = $field;
                     $this->extractChildFields($field->meta['fields']);
                 }

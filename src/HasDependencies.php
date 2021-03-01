@@ -2,18 +2,18 @@
 
 namespace Epartment\NovaDependencyContainer;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
-use Illuminate\Support\Collection;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\FieldCollection;
-use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Fields\MorphTo;
 use Laravel\Nova\Http\Requests\ActionRequest;
+use Laravel\Nova\Http\Requests\NovaRequest;
 
 trait HasDependencies
 {
-    protected $childFieldsArr = [];
+    use HasChildFields;
 
     /**
      * @param NovaRequest $request
@@ -98,73 +98,5 @@ trait HasDependencies
             'AssociatableController@index',
             'MorphableController@index',
         ]);
-    }
-
-    /**
-     * @param  [array] $childFields [meta fields]
-     * @return void
-     */
-    protected function extractChildFields($childFields)
-    {
-        foreach ($childFields as $childField) {
-            if ($childField instanceof NovaDependencyContainer) {
-                $this->extractChildFields($childField->meta['fields']);
-            } else {
-                if (array_search($childField->attribute, array_column($this->childFieldsArr, 'attribute')) === false) {
-                    // @todo: we should not randomly apply rules to child-fields.
-                    $childField = $this->applyRulesForChildFields($childField);
-                    $this->childFieldsArr[] = $childField;
-                }
-            }
-        }
-    }
-
-    /**
-     * @param  [array] $childField
-     * @return [array] $childField
-     */
-    protected function applyRulesForChildFields($childField)
-    {
-        if (isset($childField->rules)) {
-            $childField->rules[] = "sometimes:required:".$childField->attribute;
-        }
-        if (isset($childField->creationRules)) {
-            $childField->creationRules[] = "sometimes:required:".$childField->attribute;
-        }
-        if (isset($childField->updateRules)) {
-            $childField->updateRules[] = "sometimes:required:".$childField->attribute;
-        }
-        return $childField;
-    }
-
-    /**
-     * Validate action fields
-     * Overridden using ActionController & ActionRequest by modifying routes
-     * @param  \Laravel\Nova\Http\Requests\ActionRequest  $request
-     * @return void
-     */
-    public function validateFields(ActionRequest $request = null) {
-        $availableFields = [];
-        if ( !empty( ($action_fields = $this->action()->fields()) ) ) {
-            foreach ($action_fields as $field) {
-                if ($field instanceof NovaDependencyContainer) {
-                    // do not add any fields for validation if container is not satisfied
-                    if($field->areDependenciesSatisfied($this)) {
-                        $availableFields[] = $field;
-                        $this->extractChildFields($field->meta['fields']);
-                    }
-                } else {
-                    $availableFields[] = $field;
-                }
-            }
-        }
-
-        if ($this->childFieldsArr) {
-            $availableFields = array_merge($availableFields, $this->childFieldsArr);
-        }
-
-        $this->validate(collect($availableFields)->mapWithKeys(function ($field) {
-            return $field->getCreationRules($this);
-        })->all());
     }
 }
