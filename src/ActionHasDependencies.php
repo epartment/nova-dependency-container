@@ -2,6 +2,8 @@
 
 namespace Epartment\NovaDependencyContainer;
 
+use Laravel\Nova\Http\Requests\ActionRequest;
+
 trait ActionHasDependencies
 {
     use HasChildFields;
