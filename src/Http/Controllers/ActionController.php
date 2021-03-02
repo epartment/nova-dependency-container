@@ -9,8 +9,7 @@ use Laravel\Nova\Http\Controllers\ActionController as NovaActionController;
 class ActionController extends NovaActionController
 {
     /**
-     * This uses the custom ActionRequest typehint to enable
-     * dependency features.
+     * create custom request from base Nova ActionRequest
      *
      * @param  \Laravel\Nova\Http\Requests\ActionRequest  $request
      * @return \Illuminate\Http\Response
