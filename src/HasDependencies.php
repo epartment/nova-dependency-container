@@ -2,13 +2,9 @@
 
 namespace Epartment\NovaDependencyContainer;
 
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
-use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\FieldCollection;
-use Laravel\Nova\Fields\MorphTo;
-use Laravel\Nova\Http\Requests\ActionRequest;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 trait HasDependencies
@@ -16,8 +12,8 @@ trait HasDependencies
     use HasChildFields;
 
     /**
-     * @param NovaRequest $request
-     * @return FieldCollection|\Illuminate\Support\Collection
+     * @param  NovaRequest  $request
+     * @return FieldCollection
      */
     public function availableFields(NovaRequest $request)
     {
@@ -42,33 +38,36 @@ trait HasDependencies
             $availableFields = array_merge($availableFields, $this->childFieldsArr);
         }
 
-
         $availableFields = new FieldCollection(array_values($this->filter($availableFields)));
+
         return $availableFields;
     }
 
     /**
      * Check if request needs to extract child fields
      *
-     * @param NovaRequest $request
-     * @param $model
+     * @param  NovaRequest  $request
+     * @param  mixed  $model
      * @return bool
      */
-    protected function extractableRequest(NovaRequest $request, $model) {
+    protected function extractableRequest(NovaRequest $request, $model)
+    {
         // if form was submitted to update (method === 'PUT')
-        if($request->isUpdateOrUpdateAttachedRequest() && strtoupper($request->get('_method', null)) === 'PUT') {
+        if ($request->isUpdateOrUpdateAttachedRequest() && $request->method() == 'PUT') {
             return false;
         }
+
         // if form was submitted to create and new resource
-        if($request->isCreateOrAttachRequest() && $model->id === null) {
+        if ($request->isCreateOrAttachRequest() && $model->id === null) {
             return false;
         }
+
         return true;
     }
 
     /**
-     * @param $field
-     * @param NovaRequest $request
+     * @param  mixed  $field
+     * @param  NovaRequest  $request
      * @return mixed
      *
      * @todo: implement
@@ -76,14 +75,6 @@ trait HasDependencies
     public function filterFieldForRequest($field, NovaRequest $request) {
         // @todo: filter fields for request, e.g. show/hideOnIndex, create, update or whatever
         return $field;
-    }
-
-    /**
-     * @param array $availableFields
-     * @param NovaRequest $request
-     */
-    public function filterFieldsForRequest(Collection $availableFields, NovaRequest $request) {
-        return $availableFields;
     }
 
     /**

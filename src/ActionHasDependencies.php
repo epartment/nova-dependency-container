@@ -18,7 +18,7 @@ trait ActionHasDependencies
     {
         $availableFields = [];
 
-        foreach ($request->action()->fields() as $field) {
+        foreach ($this->fields() as $field) {
             if ($field instanceof NovaDependencyContainer) {
                 // do not add any fields for validation if container is not satisfied
                 if($field->areDependenciesSatisfied($this)) {
