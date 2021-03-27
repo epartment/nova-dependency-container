@@ -47,7 +47,7 @@ class NovaDependencyContainer extends Field
     {
         return $this->withMeta([
             'dependencies' => array_merge($this->meta['dependencies'], [
-                $this->getFieldLayout($field, $value)
+                 array_merge($this->getFieldLayout($field), ['value' => $value])
             ])
         ]);
     }
@@ -118,10 +118,9 @@ class NovaDependencyContainer extends Field
      * result in {field}.{field}, as it was in previous versions by default.
      *
      * @param $field
-     * @param $value
      * @return array
      */
-    protected function getFieldLayout($field, $value = null)
+    protected function getFieldLayout($field)
     {
         if (count( ($field = explode('.', $field)) ) === 1) {
             // backwards compatibility, property becomes field
@@ -132,8 +131,6 @@ class NovaDependencyContainer extends Field
             'field' => $field[0],
             // property to compare
             'property' => $field[1],
-            // value to compare
-            'value' => $value,
         ];
     }
 
