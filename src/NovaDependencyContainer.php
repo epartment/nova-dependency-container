@@ -53,6 +53,22 @@ class NovaDependencyContainer extends Field
     }
 
     /**
+     * Adds a dependency on an array value
+     *
+     * @param $field
+     * @param $value
+     * @return $this
+     */
+    public function dependsOnExistsInArray($field, $value)
+    {
+        return $this->withMeta([
+            'dependencies' => array_merge($this->meta['dependencies'], [
+                array_merge($this->getFieldLayout($field), ['existsIn' => $value])
+            ])
+        ]);
+    }
+
+    /**
      * Adds a dependency for not
      *
      * @param $field
@@ -186,6 +202,11 @@ class NovaDependencyContainer extends Field
                 }
             }
 
+            if (array_key_exists('existsIn', $dependency) && in_array($resource->{$dependency['property']}, $dependency['existsIn'], true)) {
+                $this->meta['dependencies'][$index]['satisfied'] = true;
+                continue;
+            }
+
         }
     }
 
@@ -235,6 +256,9 @@ class NovaDependencyContainer extends Field
 
         $satisfiedCounts = 0;
         foreach ($this->meta['dependencies'] as $index => $dependency) {
+            if (array_key_exists('existsIn', $dependency) && in_array($request->has($dependency['property']), $dependency['existsIn'], true)) {
+                $satisfiedCounts++;
+            }
 
             if (array_key_exists('empty', $dependency) && empty($request->has($dependency['property']))) {
                 $satisfiedCounts++;
