@@ -17,14 +17,16 @@ trait HasDependencies
      */
     public function availableFields(NovaRequest $request)
     {
+        $method = $this->fieldsMethod($request);
+
         // needs to be filtered once to resolve Panels
-        $fields = $this->filter($this->fields($request));
+        $fields = $this->filter($this->filter($this->{$method}($request)));
         $availableFields = [];
 
         foreach ($fields as $field) {
             if ($field instanceof NovaDependencyContainer) {
                 $availableFields[] = $this->filterFieldForRequest($field, $request);
-                if($field->areDependenciesSatisfied($request) || $this->extractableRequest($request, $this->model())) {
+                if ($field->areDependenciesSatisfied($request) || $this->extractableRequest($request, $this->model())) {
                     if ($this->doesRouteRequireChildFields()) {
                         $this->extractChildFields($field->meta['fields']);
                     }
