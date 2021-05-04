@@ -20,7 +20,7 @@ trait HasDependencies
         $method = $this->fieldsMethod($request);
 
         // needs to be filtered once to resolve Panels
-        $fields = $this->filter($this->filter($this->{$method}($request)));
+        $fields = $this->filter($this->{$method}($request));
         $availableFields = [];
 
         foreach ($fields as $field) {
