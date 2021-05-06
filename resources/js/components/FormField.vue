@@ -23,7 +23,7 @@
 		props: ['resourceName', 'resourceId', 'field'],
 
 		mounted() {
-			this.registerDependencyWatchers(this.$root, function() {
+			this.registerDependencyWatchers(this.findRootComponent(), function() {
 				this.updateDependencyStatus();
 			});
 		},
@@ -36,7 +36,18 @@
 		},
 
 		methods: {
+			findRootComponent() {
+				let parent = this.$parent, el = this.$el;
+				while (parent) {
+					do {
+						if (el.tagName === 'FORM') return parent;
+						el = el.parentElement;
+					} while (el && parent.$el !== el)
+					parent = parent.$parent
+				}
 
+				return this.$root
+			},
 			// @todo: refactor entire watcher procedure, this approach isn't maintainable ..
 			registerDependencyWatchers(root, callback) {
 				callback = callback || null;
