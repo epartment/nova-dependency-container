@@ -212,6 +212,7 @@ class NovaDependencyContainer extends Field
      * @param $model
      * @param $attribute
      * @param null $requestAttribute
+     * @return callable
      */
     public function fillInto(NovaRequest $request, $model, $attribute, $requestAttribute = null)
     {
