@@ -215,9 +215,17 @@ class NovaDependencyContainer extends Field
      */
     public function fillInto(NovaRequest $request, $model, $attribute, $requestAttribute = null)
     {
-        foreach($this->meta['fields'] as $field) {
-            $field->fill($request, $model);
-        }
+        $callbacks = collect($this->meta['fields'])
+            ->map(function ($field) use ($request, $model) {
+                return $field->fill($request, $model);
+            })
+            ->filter('is_callable');
+
+        return function () use ($callbacks) {
+            $callbacks->each(function ($callback) {
+                call_user_func($callback);
+            });
+        };
     }
 
     /**
