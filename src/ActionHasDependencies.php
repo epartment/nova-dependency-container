@@ -28,6 +28,8 @@ trait ActionHasDependencies
         if ($this->childFieldsArr) {
             $availableFields = array_merge($availableFields, $this->childFieldsArr);
         }
+        
+        return $availableFields;
     }
 
     /**
