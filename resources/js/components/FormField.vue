@@ -133,7 +133,7 @@
             return;
           }
 
-					if (dependency.hasOwnProperty('not') && dependencyValue !== dependency.not) {
+					if (dependency.hasOwnProperty('not') && dependencyValue != dependency.not) {
 						this.dependenciesSatisfied = true;
 						return;
 					}
