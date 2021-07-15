@@ -68,6 +68,22 @@ class NovaDependencyContainer extends Field
     }
 
     /**
+     * Adds a dependency for a field being NOT equal to a list of values
+     *
+     * @param $field
+     * @param $value
+     * @return $this
+     */
+    public function dependsOnNotArray($field, $values)
+    {
+        return $this->withMeta([
+            'dependencies' => array_merge($this->meta['dependencies'], [
+                array_merge($this->getFieldLayout($field), ['notArray' => (array) $values])
+            ])
+        ]);
+    }
+
+    /**
      * Adds a dependency for not empty
      *
      * @param $field
@@ -164,6 +180,12 @@ class NovaDependencyContainer extends Field
             }
             // inverted
             if (array_key_exists('nullOrZero', $dependency) && in_array($resource->{$dependency['property']}, [null, 0, '0'], true)) {
+                $this->meta['dependencies'][$index]['satisfied'] = true;
+                continue;
+            }
+
+            // inverted
+            if (array_key_exists('notArray', $dependency) && !in_array($resource->{$dependency['property']}, (array) $dependency['notArray'], true)) {
                 $this->meta['dependencies'][$index]['satisfied'] = true;
                 continue;
             }
