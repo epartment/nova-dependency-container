@@ -128,15 +128,10 @@
 						return;
 					}
 
-          if (dependency.hasOwnProperty('notArray') && -1 === dependency.notArray.indexOf(dependencyValue) ) {
+          if (dependency.hasOwnProperty('not') && -1 === dependency.not.indexOf(dependencyValue) ) {
             this.dependenciesSatisfied = true;
             return;
           }
-
-					if (dependency.hasOwnProperty('not') && dependencyValue != dependency.not) {
-						this.dependenciesSatisfied = true;
-						return;
-					}
 
 					if (dependency.hasOwnProperty('value') && dependencyValue == dependency.value) {
 						this.dependenciesSatisfied = true;

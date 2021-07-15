@@ -72,11 +72,10 @@ class Page extends Resource
 The package supports four kinds of dependencies:
 
 1. `->dependsOn('field', 'value')`
-2. `->dependsOnNot('field', 'value')`
-3. `->dependsOnNotArray('field', ['value1', 'value2', 'value3'])`
-4. `->dependsOnEmpty('field')`
-5. `->dependsOnNotEmpty('field')`
-6. `->dependsOnNullOrZero('field')`
+2. `->dependsOnNot('field', 'value')` or `->dependsOnNot('field', ['value1', 'value2', 'value3'])`
+3. `->dependsOnEmpty('field')`
+4. `->dependsOnNotEmpty('field')`
+5. `->dependsOnNullOrZero('field')`
 
 These dependencies can be combined by chaining the methods on the `NovaDependencyContainer`:
 

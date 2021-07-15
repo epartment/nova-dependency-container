@@ -53,32 +53,17 @@ class NovaDependencyContainer extends Field
     }
 
     /**
-     * Adds a dependency for not
-     *
-     * @param $field
-     * @return NovaDependencyContainer
-     */
-    public function dependsOnNot($field, $value)
-    {
-        return $this->withMeta([
-            'dependencies' => array_merge($this->meta['dependencies'], [
-                array_merge($this->getFieldLayout($field), ['not' => $value])
-            ])
-        ]);
-    }
-
-    /**
      * Adds a dependency for a field being NOT equal to a list of values
      *
      * @param $field
      * @param $value
      * @return $this
      */
-    public function dependsOnNotArray($field, $values)
+    public function dependsOnNot($field, $values)
     {
         return $this->withMeta([
             'dependencies' => array_merge($this->meta['dependencies'], [
-                array_merge($this->getFieldLayout($field), ['notArray' => (array) $values])
+                array_merge($this->getFieldLayout($field), ['not' => (array) $values])
             ])
         ]);
     }
@@ -185,12 +170,7 @@ class NovaDependencyContainer extends Field
             }
 
             // inverted
-            if (array_key_exists('notArray', $dependency) && !in_array($resource->{$dependency['property']}, (array) $dependency['notArray'], true)) {
-                $this->meta['dependencies'][$index]['satisfied'] = true;
-                continue;
-            }
-
-            if (array_key_exists('not', $dependency) && $resource->{$dependency['property']} != $dependency['not']) {
+            if (array_key_exists('not', $dependency) && !in_array($resource->{$dependency['property']}, (array) $dependency['not'], true)) {
                 $this->meta['dependencies'][$index]['satisfied'] = true;
                 continue;
             }
