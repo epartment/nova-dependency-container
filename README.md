@@ -20,8 +20,8 @@ A container for grouping fields that depend on other field values. Dependencies 
 
 ### Versions
 
- - install v1.2.x for Laravel v5.8 or v6.x and Nova 2.x
- - install v1.1.2 for Laravel v5.7 and Nova v1.x
+- install v1.2.x for Laravel v5.8 or v6.x and Nova 2.x
+- install v1.1.2 for Laravel v5.7 and Nova v1.x
 
 <br />
 
@@ -72,7 +72,7 @@ class Page extends Resource
 The package supports four kinds of dependencies:
 
 1. `->dependsOn('field', 'value')`
-2. `->dependsOnNot('field', 'value')`
+2. `->dependsOnNot('field', 'value')` or `->dependsOnNot('field', ['value1', 'value2', 'value3'])`
 3. `->dependsOnEmpty('field')`
 4. `->dependsOnNotEmpty('field')`
 5. `->dependsOnNullOrZero('field')`
@@ -88,7 +88,7 @@ NovaDependencyContainer::make([
 ->dependsOn('field3', 'value3')
 ```
 
-The fields used as dependencies can be of any Laravel Nova field type. Currently only two relation field types are supported, `BelongsTo` and `MorphTo`. 
+The fields used as dependencies can be of any Laravel Nova field type. Currently only two relation field types are supported, `BelongsTo` and `MorphTo`.
 
 Here is an example using a checkbox:
 
@@ -120,7 +120,7 @@ When the `Post` resource with `id` 2 is being selected, a `Boolean` field will a
 
 A [BelongsToMany](https://nova.laravel.com/docs/2.0/resources/relationships.html#belongstomany) setup is similar to that of a [BelongsTo](https://nova.laravel.com/docs/2.0/resources/relationships.html#belongsto).
 
-The `dependsOn` method should be pointing to the name of the intermediate table. If it is called `role_user`, the setup should be 
+The `dependsOn` method should be pointing to the name of the intermediate table. If it is called `role_user`, the setup should be
 
 ```php
 BelongsToMany::make('Roles')
