@@ -123,7 +123,7 @@ export default {
 					return;
 				}
 
-				if (dependency.hasOwnProperty('nullOrZero') && 1 < [undefined, null, 0, '0'].indexOf(dependencyValue)) {
+				if (dependency.hasOwnProperty('nullOrZero') && -1 < [undefined, null, 0, '0'].indexOf(dependencyValue)) {
 					this.dependenciesSatisfied = true;
 					return;
 				}
