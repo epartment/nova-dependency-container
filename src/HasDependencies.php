@@ -30,7 +30,7 @@ trait HasDependencies
         foreach ($fields as $field) {
             if ($field instanceof NovaDependencyContainer) {
                 $availableFields[] = $this->filterFieldForRequest($field, $request);
-                if($field->areDependenciesSatisfied($request) || $this->extractableRequest($request, $this->model())) {
+                if ($field->areDependenciesSatisfied($request) || $this->extractableRequest($request, $this->model())) {
                     if ($this->doesRouteRequireChildFields()) {
                         $this->extractChildFields($field->meta['fields']);
                     }

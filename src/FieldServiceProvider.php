@@ -19,8 +19,10 @@ class FieldServiceProvider extends ServiceProvider
     {
         // Override ActionController after NovaServiceProvider loaded
         Event::listen(NovaServiceProviderRegistered::class, function () {
-            app('router')->middleware('nova')->post('/nova-api/{resource}/action', 
-                ['uses' => '\Epartment\NovaDependencyContainer\Http\Controllers\ActionController@store']);
+            app()->bind(
+                \Laravel\Nova\Http\Controllers\ActionController::class,
+                \Epartment\NovaDependencyContainer\Http\Controllers\ActionController::class
+            );
         });
 
         Nova::serving(function (ServingNova $event) {
