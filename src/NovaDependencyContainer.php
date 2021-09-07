@@ -2,10 +2,9 @@
 
 namespace OptimistDigital\NovaDependencyContainer;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use Illuminate\Support\Str;
 
 class NovaDependencyContainer extends Field
 {
@@ -123,7 +122,7 @@ class NovaDependencyContainer extends Field
      */
     protected function getFieldLayout($field, $value = null)
     {
-        if (count( ($field = explode('.', $field)) ) === 1) {
+        if (count(($field = explode('.', $field))) === 1) {
             // backwards compatibility, property becomes field
             $field[1] = $field[0];
         }
@@ -181,13 +180,12 @@ class NovaDependencyContainer extends Field
                     continue;
                 }
                 // @todo: quickfix for MorphTo
-                $morphable_attribute = $resource->getAttribute($dependency['property'].'_type');
-                if ($morphable_attribute !== null && Str::endsWith($morphable_attribute, '\\'.$dependency['value'])) {
+                $morphable_attribute = $resource->getAttribute($dependency['property'] . '_type');
+                if ($morphable_attribute !== null && Str::endsWith($morphable_attribute, '\\' . $dependency['value'])) {
                     $this->meta['dependencies'][$index]['satisfied'] = true;
                     continue;
                 }
             }
-
         }
     }
 
@@ -217,7 +215,7 @@ class NovaDependencyContainer extends Field
      */
     public function fillInto(NovaRequest $request, $model, $attribute, $requestAttribute = null)
     {
-        foreach($this->meta['fields'] as $field) {
+        foreach ($this->meta['fields'] as $field) {
             $field->fill($request, $model);
         }
     }
@@ -230,8 +228,10 @@ class NovaDependencyContainer extends Field
      */
     public function areDependenciesSatisfied(NovaRequest $request)
     {
-        if (!isset($this->meta['dependencies'])
-            || !is_array($this->meta['dependencies'])) {
+        if (
+            !isset($this->meta['dependencies'])
+            || !is_array($this->meta['dependencies'])
+        ) {
             return false;
         }
 
@@ -273,9 +273,11 @@ class NovaDependencyContainer extends Field
     protected function getSituationalRulesSet(NovaRequest $request, string $propertyName = 'rules')
     {
         $fieldsRules = [$this->attribute => []];
-        if (!$this->areDependenciesSatisfied($request)
+        if (
+            !$this->areDependenciesSatisfied($request)
             || !isset($this->meta['fields'])
-            || !is_array($this->meta['fields'])) {
+            || !is_array($this->meta['fields'])
+        ) {
             return $fieldsRules;
         }
 

@@ -1,6 +1,6 @@
 <template>
   <div v-if="dependenciesSatisfied">
-    <div v-for="childField in field.fields">
+    <div v-for="(childField, i) in field.fields" :key="i">
       <component
         :is="'form-' + childField.component"
         :errors="errors"
@@ -101,8 +101,10 @@ export default {
 
       for (let dependency of this.field.dependencies) {
         // #93 compatability with flexible-content, which adds a generated attribute for each field
+
         if (component.field.attribute === this.field.attribute + dependency.field) {
-          return true;
+          // Fix Action picking up fields in the background
+          return !component.$options.name.startsWith('index');
         }
       }
 
