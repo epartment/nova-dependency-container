@@ -1,9 +1,9 @@
 <?php
 
-namespace Epartment\NovaDependencyContainer\Http\Requests;
+namespace OptimistDigital\NovaDependencyContainer\Http\Requests;
 
-use Epartment\NovaDependencyContainer\HasDependencies;
-use Epartment\NovaDependencyContainer\NovaDependencyContainer;
+use OptimistDigital\NovaDependencyContainer\HasDependencies;
+use OptimistDigital\NovaDependencyContainer\NovaDependencyContainer;
 use Laravel\Nova\Http\Requests\ActionRequest as NovaActionRequest;
 
 class ActionRequest extends NovaActionRequest {

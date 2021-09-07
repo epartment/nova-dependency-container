@@ -1,45 +1,33 @@
-# Nova Field Dependency Container
+# Nova Dependency Container
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/epartment/nova-dependency-container.svg)](https://packagist.org/packages/epartment/nova-dependency-container)
-[![Total Downloads](https://img.shields.io/packagist/dt/epartment/nova-dependency-container.svg)](https://packagist.org/packages/epartment/nova-dependency-container)
-[![License](https://img.shields.io/packagist/l/epartment/nova-dependency-container.svg)](https://github.com/epartment/nova-dependency-container/blob/master/LICENSE.md)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/optimistdigital/nova-dependency-container.svg)](https://packagist.org/packages/optimistdigital/nova-dependency-container)
+[![Total Downloads](https://img.shields.io/packagist/dt/optimistdigital/nova-dependency-container.svg)](https://packagist.org/packages/optimistdigital/nova-dependency-container)
+[![License](https://img.shields.io/packagist/l/optimistdigital/nova-dependency-container.svg)](https://github.com/optimistdigital/nova-dependency-container/blob/master/LICENSE.md)
 
-<br />
+This [Laravel Nova](https://nova.laravel.com) package adds a container for grouping fields that depend on other fields' values.
 
-### Description
+## Requirements
 
-A container for grouping fields that depend on other field values. Dependencies can be set on any field type or value.
+- `php: >=7.2`
+- `laravel/nova: ^3.0`
 
-<br />
+## Screenshots
 
-### Demo
+![Screenshots](https://raw.githubusercontent.com/optimistdigital/nova-dependency-container/master/docs/demo.gif)
 
-![Demo](https://raw.githubusercontent.com/epartment/nova-dependency-container/master/docs/demo.gif)
+## Installation
 
-<br />
-
-### Versions
-
- - install v1.2.x for Laravel v5.8 or v6.x and Nova 2.x
- - install v1.1.2 for Laravel v5.7 and Nova v1.x
-
-<br />
-
-### Installation
-
-The package can be installed through Composer.
+Install the package in a Laravel Nova project via Composer:
 
 ```bash
-composer require epartment/nova-dependency-container
+composer require optimistdigital/nova-depdendency-container
 ```
 
-<br />
+## Usage
 
-### Usage
-
-1. Add the `Epartment\NovaDependencyContainer\HasDependencies` trait to your Nova Resource.
-2. Add the `Epartment\NovaDependencyContainer\NovaDependencyContainer` to your Nova Resource `fields` method.
-3. Add the `Epartment\NovaDependencyContainer\ActionHasDependencies` trait to your Nova Actions that you wish to use dependencies on.
+1. Add the `OptimistDigital\NovaDependencyContainer\HasDependencies` trait to your Nova Resource.
+2. Add the `OptimistDigital\NovaDependencyContainer\NovaDependencyContainer` field to your Nova Resource.
+3. Add the `OptimistDigital\NovaDependencyContainer\ActionHasDependencies` trait to your Nova Actions that you wish to use dependencies on.
 
 ```php
 class Page extends Resource
@@ -49,7 +37,7 @@ class Page extends Resource
     public function fields(Request $request)
     {
         return [
-            
+
             Select::make('Name format', 'name_format')->options([
                 0 => 'First Name',
                 1 => 'First Name / Last Name',
@@ -64,8 +52,6 @@ class Page extends Resource
     }
 }
 ```
-
-<br />
 
 ### Dependencies
 
@@ -88,18 +74,15 @@ NovaDependencyContainer::make([
 ->dependsOn('field3', 'value3')
 ```
 
-The fields used as dependencies can be of any Laravel Nova field type. Currently only two relation field types are supported, `BelongsTo` and `MorphTo`. 
+The fields used as dependencies can be of any Laravel Nova field type. Currently only two relation field types are supported, `BelongsTo` and `MorphTo`.
 
 Here is an example using a checkbox:
 
-![Demo](https://raw.githubusercontent.com/epartment/nova-dependency-container/master/docs/demo-2.gif)
-
-
-<br />
+![Demo](https://raw.githubusercontent.com/optimistdigital/nova-dependency-container/master/docs/demo-2.gif)
 
 ### BelongsTo dependency
 
-If we follow the example of a *Post model belongsTo a User model*, taken from Novas documentation [BelongsTo](https://nova.laravel.com/docs/2.0/resources/relationships.html#belongsto), the dependency setup has the following construction.
+If we follow the example of a _Post model belongsTo a User model_, taken from Novas documentation [BelongsTo](https://nova.laravel.com/docs/2.0/resources/relationships.html#belongsto), the dependency setup has the following construction.
 
 We use the singular form of the `belongsTo` resource in lower case, in this example `Post` becomes `post`. Then we define in dot notation, the property of the resource we want to depend on. In this example we just use the `id` property, as in `post.id`.
 
@@ -114,13 +97,11 @@ NovaDependencyContainer::make([
 
 When the `Post` resource with `id` 2 is being selected, a `Boolean` field will appear.
 
-<br />
-
 ### BelongsToMany dependency
 
 A [BelongsToMany](https://nova.laravel.com/docs/2.0/resources/relationships.html#belongstomany) setup is similar to that of a [BelongsTo](https://nova.laravel.com/docs/2.0/resources/relationships.html#belongsto).
 
-The `dependsOn` method should be pointing to the name of the intermediate table. If it is called `role_user`, the setup should be 
+The `dependsOn` method should be pointing to the name of the intermediate table. If it is called `role_user`, the setup should be
 
 ```php
 BelongsToMany::make('Roles')
@@ -143,26 +124,26 @@ Here is an (ugly) example of a get/set mutator setup for an intermediate table u
 
 ```php
 // model User
-class User ... { 
-   
+class User ... {
+
    public function roles() {
    		return $this->belongsToMany->using(RoleUser::class)->withPivot('rules_all');
    }
-   
+
 }
 
 // model Role
-class Role ... { 
-   
+class Role ... {
+
    public function users() {
    		return $this->belongsToMany->using(RoleUser::class)->withPivot('rules_all');
    }
-   
+
 }
 
 // intermediate table
 use Illuminate\Database\Eloquent\Relations\Pivot;
-class RoleUser extends Pivot {  
+class RoleUser extends Pivot {
 
 	protected $table 'role_user';
 
@@ -186,31 +167,29 @@ And now for the dependency container.
 		NovaDependencyContainer::make([
 		    // pivot field rules_all
 		    Select::make('Type', 'type_1')
-		    	->options([ 
-		    		/* some options */ 
+		    	->options([
+		    		/* some options */
 	    		])
 		    	->displayUsingLabels()
 		])
 		->dependsOn('role_user', 1)
 		,
-	
+
 		NovaDependencyContainer::make([
 		    // pivot field rules_all
 		    Select::make('Type', 'type_2')
-		    	->options([ 
-		    		/* different options */ 
+		    	->options([
+		    		/* different options */
 	    		])
 		    	->displayUsingLabels()
 		])
 		->dependsOn('role_user', 2)
 		,
-		
+
 		// .. and so on
 	]
 }),
 ```
-
-<br />
 
 ### MorphTo dependency
 
@@ -230,11 +209,9 @@ NovaDependencyContainer::make([
     Text::make('Additional Text', 'additional'),
     Boolean::make('Visible', 'visible')
 ])
-->dependsOn('commentable', 'Post') 
+->dependsOn('commentable', 'Post')
 ```
 
-<br />
+## License
 
-### License
-
-The MIT License (MIT). Please see [License File](https://github.com/epartment/nova-dependency-container/blob/master/LICENSE.md) for more information.
+This project is open-sourced software licensed under the [MIT license](LICENSE.md).

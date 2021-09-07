@@ -1,6 +1,6 @@
 <?php
 
-namespace Epartment\NovaDependencyContainer;
+namespace OptimistDigital\NovaDependencyContainer;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;

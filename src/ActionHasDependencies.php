@@ -1,6 +1,6 @@
 <?php
 
-namespace Epartment\NovaDependencyContainer;
+namespace OptimistDigital\NovaDependencyContainer;
 
 use Laravel\Nova\Http\Requests\ActionRequest;
 use Illuminate\Support\Facades\Validator;
