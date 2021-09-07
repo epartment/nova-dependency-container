@@ -13,4 +13,5 @@ Forked from [epartment/nova-dependency-container](https://github.com/epartment/n
 ### Changed
 
 - Use `data_get` to access resource properties to support array/object values
+- Updated dependencies
 - Updated packages

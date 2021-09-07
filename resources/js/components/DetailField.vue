@@ -1,44 +1,42 @@
 <template>
-	<div v-if="dependenciesSatisfied">
-		<div v-for="childField in field.fields">
-			<component
-				:is="'detail-' + childField.component"
-				:resource-id="resourceId"
-				:resource-name="resourceName"
-				:field="childField"
-				:ref="'field-' + childField.attribute"
-			/>
-		</div>
-	</div>
+  <div v-if="dependenciesSatisfied">
+    <div v-for="childField in field.fields">
+      <component
+        :is="'detail-' + childField.component"
+        :resource-id="resourceId"
+        :resource-name="resourceName"
+        :field="childField"
+        :ref="'field-' + childField.attribute"
+      />
+    </div>
+  </div>
 </template>
 
 <script>
-	export default {
-		props: ['resource', 'resourceName', 'resourceId', 'field'],
+export default {
+  props: ['resource', 'resourceName', 'resourceId', 'field'],
 
-		created() {
-			this.updateDependencyStatus()
-		},
+  created() {
+    this.updateDependencyStatus();
+  },
 
-		data() {
-			return {
-				dependenciesSatisfied: false,
-			}
-		},
+  data() {
+    return {
+      dependenciesSatisfied: false,
+    };
+  },
 
-		methods: {
+  methods: {
+    updateDependencyStatus() {
+      for (let dependency of this.field.dependencies) {
+        if (dependency.satisfied) {
+          this.dependenciesSatisfied = true;
+          return;
+        }
+      }
 
-			updateDependencyStatus() {
-				for (let dependency of this.field.dependencies) {
-					if(dependency.satisfied) {
-						this.dependenciesSatisfied = true;
-						return;
-					}
-				}
-
-				this.dependenciesSatisfied = false;
-			},
-
-		}
-	}
+      this.dependenciesSatisfied = false;
+    },
+  },
+};
 </script>
