@@ -7,7 +7,7 @@ trait HasChildFields
     protected $childFieldsArr = [];
 
     /**
-     * @param  [array] $childFields [meta fields]
+     * @param  array $childFields meta fields
      * @return void
      */
     protected function extractChildFields($childFields)
@@ -26,8 +26,8 @@ trait HasChildFields
     }
 
     /**
-     * @param  [array] $childField
-     * @return [array] $childField
+     * @param  array $childField
+     * @return array $childField
      */
     protected function applyRulesForChildFields($childField)
     {
