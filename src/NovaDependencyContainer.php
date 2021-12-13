@@ -68,6 +68,21 @@ class NovaDependencyContainer extends Field
     }
 
     /**
+     * Adds a dependency for in
+     *
+     * @param $field
+     * @return NovaDependencyContainer
+     */
+    public function dependsOnIn($field, $array)
+    {
+        return $this->withMeta([
+            'dependencies' => array_merge($this->meta['dependencies'], [
+                array_merge($this->getFieldLayout($field), ['in' => $array])
+            ])
+        ]);
+    }
+
+    /**
      * Adds a dependency for not empty
      *
      * @param $field
@@ -169,6 +184,11 @@ class NovaDependencyContainer extends Field
             }
 
             if (array_key_exists('not', $dependency) && $resource->{$dependency['property']} != $dependency['not']) {
+                $this->meta['dependencies'][$index]['satisfied'] = true;
+                continue;
+            }
+
+            if (array_key_exists('in', $dependency) && in_array($resource->{$dependency['property']}, $dependency['in'])) {
                 $this->meta['dependencies'][$index]['satisfied'] = true;
                 continue;
             }
