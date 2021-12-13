@@ -72,10 +72,11 @@ class Page extends Resource
 The package supports four kinds of dependencies:
 
 1. `->dependsOn('field', 'value')`
-2. `->dependsOnNot('field', 'value')`
-3. `->dependsOnEmpty('field')`
-4. `->dependsOnNotEmpty('field')`
-5. `->dependsOnNullOrZero('field')`
+2. `->dependsOnIn('field', ['value', 'value'])`
+3. `->dependsOnNot('field', 'value')`
+4. `->dependsOnEmpty('field')`
+5. `->dependsOnNotEmpty('field')`
+6. `->dependsOnNullOrZero('field')`
 
 These dependencies can be combined by chaining the methods on the `NovaDependencyContainer`:
 
@@ -86,6 +87,7 @@ NovaDependencyContainer::make([
 ->dependsOn('field1', 'value1')
 ->dependsOnNotEmpty('field2')
 ->dependsOn('field3', 'value3')
+->dependsOnIn('field4', ['value4', 'value5', 'value6'])
 ```
 
 The fields used as dependencies can be of any Laravel Nova field type. Currently only two relation field types are supported, `BelongsTo` and `MorphTo`. 
