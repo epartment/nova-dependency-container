@@ -128,10 +128,15 @@
 						return;
 					}
 
-					if (dependency.hasOwnProperty('not') && dependencyValue != dependency.not) {
+					if (dependency.hasOwnProperty('not') && dependencyValue !== dependency.not) {
 						this.dependenciesSatisfied = true;
 						return;
 					}
+
+                    if (dependency.hasOwnProperty('in') && dependency.in.includes(dependencyValue)) {
+                        this.dependenciesSatisfied = true;
+                        return;
+                    }
 
 					if (dependency.hasOwnProperty('value') && dependencyValue == dependency.value) {
 						this.dependenciesSatisfied = true;
