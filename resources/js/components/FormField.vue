@@ -138,7 +138,7 @@
                         return;
                     }
 
-                    if (dependency.hasOwnProperty('notin') && !dependency.not.includes(dependencyValue)) {
+                    if (dependency.hasOwnProperty('notin') && !dependency.notin.includes(dependencyValue)) {
                         this.dependenciesSatisfied = true;
                         return;
                     }
