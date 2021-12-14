@@ -63,7 +63,7 @@ class NovaDependencyContainer extends Field
     {
         return $this->withMeta([
             'dependencies' => array_merge($this->meta['dependencies'], [
-                $this->getFieldLayout($field, $array, ['in' => $value])
+                array_merge($this->getFieldLayout($field), ['in' => $array])
             ])
         ]);
     }
@@ -94,7 +94,7 @@ class NovaDependencyContainer extends Field
     {
         return $this->withMeta([
             'dependencies' => array_merge($this->meta['dependencies'], [
-                $this->getFieldLayout($field, $array, ['notin' => $value])
+                array_merge($this->getFieldLayout($field), ['notin' => $array])
             ])
         ]);
     }
