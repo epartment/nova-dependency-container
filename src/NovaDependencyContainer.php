@@ -206,6 +206,17 @@ class NovaDependencyContainer extends Field
                 continue;
             }
 
+            if (array_key_exists('in', $dependency) && in_array($dependency['in'], $resource->{$dependency['property']})) {
+                $this->meta['dependencies'][$index]['satisfied'] = true;
+                continue;
+            }
+
+            if (array_key_exists('notin', $dependency) && in_array($dependency['notin'], $resource->{$dependency['property']})) {
+                $this->meta['dependencies'][$index]['satisfied'] = true;
+                continue;
+            }
+
+
             if (array_key_exists('value', $dependency)) {
                 if ($dependency['value'] == $resource->{$dependency['property']}) {
                     $this->meta['dependencies'][$index]['satisfied'] = true;
