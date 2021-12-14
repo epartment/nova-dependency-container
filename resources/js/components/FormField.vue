@@ -133,7 +133,7 @@
 						return;
 					}
 
-                    if (dependency.hasOwnProperty('in') && dependency.not.includes(dependencyValue)) {
+                    if (dependency.hasOwnProperty('in') && dependency.in.includes(dependencyValue)) {
                         this.dependenciesSatisfied = true;
                         return;
                     }
