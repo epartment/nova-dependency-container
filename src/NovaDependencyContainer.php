@@ -53,6 +53,22 @@ class NovaDependencyContainer extends Field
     }
 
     /**
+     * Adds a dependency for in
+     *
+     * @param $field
+     * @param $array
+     * @return $this
+     */
+    public function dependsOnIn($field, $array)
+    {
+        return $this->withMeta([
+            'dependencies' => array_merge($this->meta['dependencies'], [
+                $this->getFieldLayout($field, $array, ['in' => $value])
+            ])
+        ]);
+    }
+
+    /**
      * Adds a dependency for not
      *
      * @param $field
@@ -66,6 +82,23 @@ class NovaDependencyContainer extends Field
             ])
         ]);
     }
+
+    /**
+     * Adds a dependency for not in
+     *
+     * @param $field
+     * @param $array
+     * @return $this
+     */
+    public function dependsOnNotIn($field, $array)
+    {
+        return $this->withMeta([
+            'dependencies' => array_merge($this->meta['dependencies'], [
+                $this->getFieldLayout($field, $array, ['notin' => $value])
+            ])
+        ]);
+    }
+
 
     /**
      * Adds a dependency for not empty

@@ -49,7 +49,7 @@ class Page extends Resource
     public function fields(Request $request)
     {
         return [
-            
+
             Select::make('Name format', 'name_format')->options([
                 0 => 'First Name',
                 1 => 'First Name / Last Name',
@@ -72,10 +72,12 @@ class Page extends Resource
 The package supports four kinds of dependencies:
 
 1. `->dependsOn('field', 'value')`
-2. `->dependsOnNot('field', 'value')`
-3. `->dependsOnEmpty('field')`
-4. `->dependsOnNotEmpty('field')`
-5. `->dependsOnNullOrZero('field')`
+2. `->dependsOnIn('field', ['value', 'value2'])`
+3. `->dependsOnNot('field', 'value')`
+4. `->dependsOnNotIn('field', ['value', 'value2'])`
+5. `->dependsOnEmpty('field')`
+6. `->dependsOnNotEmpty('field')`
+7. `->dependsOnNullOrZero('field')`
 
 These dependencies can be combined by chaining the methods on the `NovaDependencyContainer`:
 
@@ -88,7 +90,7 @@ NovaDependencyContainer::make([
 ->dependsOn('field3', 'value3')
 ```
 
-The fields used as dependencies can be of any Laravel Nova field type. Currently only two relation field types are supported, `BelongsTo` and `MorphTo`. 
+The fields used as dependencies can be of any Laravel Nova field type. Currently only two relation field types are supported, `BelongsTo` and `MorphTo`.
 
 Here is an example using a checkbox:
 
@@ -120,7 +122,7 @@ When the `Post` resource with `id` 2 is being selected, a `Boolean` field will a
 
 A [BelongsToMany](https://nova.laravel.com/docs/2.0/resources/relationships.html#belongstomany) setup is similar to that of a [BelongsTo](https://nova.laravel.com/docs/2.0/resources/relationships.html#belongsto).
 
-The `dependsOn` method should be pointing to the name of the intermediate table. If it is called `role_user`, the setup should be 
+The `dependsOn` method should be pointing to the name of the intermediate table. If it is called `role_user`, the setup should be
 
 ```php
 BelongsToMany::make('Roles')
@@ -143,26 +145,26 @@ Here is an (ugly) example of a get/set mutator setup for an intermediate table u
 
 ```php
 // model User
-class User ... { 
-   
+class User ... {
+
    public function roles() {
    		return $this->belongsToMany->using(RoleUser::class)->withPivot('rules_all');
    }
-   
+
 }
 
 // model Role
-class Role ... { 
-   
+class Role ... {
+
    public function users() {
    		return $this->belongsToMany->using(RoleUser::class)->withPivot('rules_all');
    }
-   
+
 }
 
 // intermediate table
 use Illuminate\Database\Eloquent\Relations\Pivot;
-class RoleUser extends Pivot {  
+class RoleUser extends Pivot {
 
 	protected $table 'role_user';
 
@@ -186,25 +188,25 @@ And now for the dependency container.
 		NovaDependencyContainer::make([
 		    // pivot field rules_all
 		    Select::make('Type', 'type_1')
-		    	->options([ 
-		    		/* some options */ 
+		    	->options([
+		    		/* some options */
 	    		])
 		    	->displayUsingLabels()
 		])
 		->dependsOn('role_user', 1)
 		,
-	
+
 		NovaDependencyContainer::make([
 		    // pivot field rules_all
 		    Select::make('Type', 'type_2')
-		    	->options([ 
-		    		/* different options */ 
+		    	->options([
+		    		/* different options */
 	    		])
 		    	->displayUsingLabels()
 		])
 		->dependsOn('role_user', 2)
 		,
-		
+
 		// .. and so on
 	]
 }),
@@ -230,7 +232,7 @@ NovaDependencyContainer::make([
     Text::make('Additional Text', 'additional'),
     Boolean::make('Visible', 'visible')
 ])
-->dependsOn('commentable', 'Post') 
+->dependsOn('commentable', 'Post')
 ```
 
 <br />
