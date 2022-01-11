@@ -123,9 +123,11 @@ class NovaDependencyContainer extends Field
      */
     protected function getFieldLayout($field, $value = null)
     {
+        $resourceContext = 'relation';
         if (count( ($field = explode('.', $field)) ) === 1) {
             // backwards compatibility, property becomes field
             $field[1] = $field[0];
+            $resourceContext = 'parent';
         }
         return [
             // literal form input name
@@ -134,6 +136,8 @@ class NovaDependencyContainer extends Field
             'property' => $field[1],
             // value to compare
             'value' => $value,
+            // context to compare (field parent resource or relation resource)
+            'context' => $resourceContext,
         ];
     }
 
@@ -174,10 +178,14 @@ class NovaDependencyContainer extends Field
             }
 
             if (array_key_exists('value', $dependency)) {
-                if ($dependency['value'] == $resource->{$dependency['property']}) {
+                if ($dependency['context'] === 'parent' && $dependency['value'] == $resource->{$dependency['property']}) {
+                    $this->meta['dependencies'][$index]['satisfied'] = true;
+                    continue;
+                } elseif ($dependency['value'] == optional($resource->{$dependency['field']})->{$dependency['property']}) {
                     $this->meta['dependencies'][$index]['satisfied'] = true;
                     continue;
                 }
+                
                 // @todo: quickfix for MorphTo
                 $morphable_attribute = $resource->getAttribute($dependency['property'].'_type');
                 if ($morphable_attribute !== null && Str::endsWith($morphable_attribute, '\\'.$dependency['value'])) {
