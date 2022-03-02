@@ -153,28 +153,30 @@ class NovaDependencyContainer extends Field
 
             $this->meta['dependencies'][$index]['satisfied'] = false;
 
-            if (array_key_exists('empty', $dependency) && empty($resource->{$dependency['property']})) {
+            $propertyValue = $resource->{$dependency['field']}->{$dependency['property']} ?? $resource->{$dependency['property']};
+
+            if (array_key_exists('empty', $dependency) && empty($propertyValue)) {
                 $this->meta['dependencies'][$index]['satisfied'] = true;
                 continue;
             }
             // inverted `empty()`
-            if (array_key_exists('notEmpty', $dependency) && !empty($resource->{$dependency['property']})) {
+            if (array_key_exists('notEmpty', $dependency) && !empty($propertyValue)) {
                 $this->meta['dependencies'][$index]['satisfied'] = true;
                 continue;
             }
             // inverted
-            if (array_key_exists('nullOrZero', $dependency) && in_array($resource->{$dependency['property']}, [null, 0, '0'], true)) {
+            if (array_key_exists('nullOrZero', $dependency) && in_array($propertyValue, [null, 0, '0'], true)) {
                 $this->meta['dependencies'][$index]['satisfied'] = true;
                 continue;
             }
 
-            if (array_key_exists('not', $dependency) && $resource->{$dependency['property']} != $dependency['not']) {
+            if (array_key_exists('not', $dependency) && ($propertyValue != $dependency['not'])) {
                 $this->meta['dependencies'][$index]['satisfied'] = true;
                 continue;
             }
 
             if (array_key_exists('value', $dependency)) {
-                if ($dependency['value'] == $resource->{$dependency['property']}) {
+                if ($dependency['value'] == $propertyValue) {
                     $this->meta['dependencies'][$index]['satisfied'] = true;
                     continue;
                 }
