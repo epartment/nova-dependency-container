@@ -133,6 +133,16 @@
 						return;
 					}
 
+                    if (dependency.hasOwnProperty('in') && dependency.in.includes(dependencyValue)) {
+                        this.dependenciesSatisfied = true;
+                        return;
+                    }
+
+                    if (dependency.hasOwnProperty('notin') && !dependency.notin.includes(dependencyValue)) {
+                        this.dependenciesSatisfied = true;
+                        return;
+                    }
+
 					if (dependency.hasOwnProperty('value') && dependencyValue == dependency.value) {
 						this.dependenciesSatisfied = true;
 						return;
