@@ -12,13 +12,13 @@
   },
   "autoload": {
     "psr-4": {
-      "Outl1ne\\NovaDependencyContainer\\": "src/"
+      "Outl1ne\\DependencyContainer\\": "src/"
     }
   },
   "extra": {
     "laravel": {
       "providers": [
-        "Outl1ne\\NovaDependencyContainer\\FieldServiceProvider"
+        "Outl1ne\\DependencyContainer\\FieldServiceProvider"
       ]
     }
   },

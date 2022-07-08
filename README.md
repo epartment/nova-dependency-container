@@ -25,9 +25,9 @@ composer require outl1ne/nova-depdendency-container
 
 ## Usage
 
-1. Add the `Outl1ne\NovaDependencyContainer\HasDependencies` trait to your Nova Resource.
-2. Add the `Outl1ne\NovaDependencyContainer\NovaDependencyContainer` field to your Nova Resource.
-3. Add the `Outl1ne\NovaDependencyContainer\ActionHasDependencies` trait to your Nova Actions that you wish to use dependencies on.
+1. Add the `Outl1ne\DependencyContainer\HasDependencies` trait to your Nova Resource.
+2. Add the `Outl1ne\DependencyContainer\DependencyContainer` field to your Nova Resource.
+3. Add the `Outl1ne\DependencyContainer\ActionHasDependencies` trait to your Nova Actions that you wish to use dependencies on.
 
 ```php
 class Page extends Resource
@@ -44,7 +44,7 @@ class Page extends Resource
                 2 => 'Full Name'
             ])->displayUsingLabels(),
 
-            NovaDependencyContainer::make([
+            DependencyContainer::make([
                 Text::make('First Name', 'first_name')
             ])->dependsOn('name_format', 0),
 
@@ -63,10 +63,10 @@ The package supports four kinds of dependencies:
 4. `->dependsOnNotEmpty('field')`
 5. `->dependsOnNullOrZero('field')`
 
-These dependencies can be combined by chaining the methods on the `NovaDependencyContainer`:
+These dependencies can be combined by chaining the methods on the `DependencyContainer`:
 
 ```php
-NovaDependencyContainer::make([
+DependencyContainer::make([
   // dependency fields
 ])
 ->dependsOn('field1', 'value1')
@@ -89,7 +89,7 @@ We use the singular form of the `belongsTo` resource in lower case, in this exam
 ```php
 BelongsTo::make('Post'),
 
-NovaDependencyContainer::make([
+DependencyContainer::make([
     Boolean::make('Visible')
 ])
 ->dependsOn('post.id', 2)
@@ -107,7 +107,7 @@ The `dependsOn` method should be pointing to the name of the intermediate table.
 BelongsToMany::make('Roles')
 	->fields(function() {
 		return [
-			NovaDependencyContainer::make([
+			DependencyContainer::make([
 			    // pivot field rules_all
 			    Boolean::make('Rules All', 'rules_all')
 			])
@@ -164,7 +164,7 @@ And now for the dependency container.
 ```php
 ->fields(function() {
 	return [
-		NovaDependencyContainer::make([
+		DependencyContainer::make([
 		    // pivot field rules_all
 		    Select::make('Type', 'type_1')
 		    	->options([
@@ -175,7 +175,7 @@ And now for the dependency container.
 		->dependsOn('role_user', 1)
 		,
 
-		NovaDependencyContainer::make([
+		DependencyContainer::make([
 		    // pivot field rules_all
 		    Select::make('Type', 'type_2')
 		    	->options([
@@ -205,7 +205,7 @@ MorphTo::make('Commentable')->types([
     Video::class,
 ]),
 
-NovaDependencyContainer::make([
+DependencyContainer::make([
     Text::make('Additional Text', 'additional'),
     Boolean::make('Visible', 'visible')
 ])

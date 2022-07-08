@@ -1,9 +1,9 @@
 <?php
 
-namespace Outl1ne\NovaDependencyContainer;
+namespace Outl1ne\DependencyContainer;
 
-use Laravel\Nova\Http\Requests\ActionRequest;
 use Illuminate\Support\Facades\Validator;
+use Laravel\Nova\Http\Requests\ActionRequest;
 
 trait ActionHasDependencies
 {
@@ -14,7 +14,7 @@ trait ActionHasDependencies
         $availableFields = [];
 
         foreach ($this->fields() as $field) {
-            if ($field instanceof NovaDependencyContainer) {
+            if ($field instanceof DependencyContainer) {
                 // do not add any fields for validation if container is not satisfied
                 if ($field->areDependenciesSatisfied($request)) {
                     $availableFields[] = $field;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Outl1ne\NovaDependencyContainer;
+namespace Outl1ne\DependencyContainer;
 
 use Laravel\Nova\Nova;
 use Laravel\Nova\Events\ServingNova;

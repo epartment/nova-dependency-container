@@ -1,12 +1,12 @@
 <?php
 
-namespace Outl1ne\NovaDependencyContainer;
+namespace Outl1ne\DependencyContainer;
 
 use Illuminate\Support\Str;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class NovaDependencyContainer extends Field
+class DependencyContainer extends Field
 {
     /**
      * The field's component.
@@ -21,7 +21,7 @@ class NovaDependencyContainer extends Field
     public $showOnIndex = false;
 
     /**
-     * NovaDependencyContainer constructor.
+     * DependencyContainer constructor.
      *
      * @param $fields
      * @param null $attribute
@@ -57,7 +57,7 @@ class NovaDependencyContainer extends Field
      * Adds a dependency for not
      *
      * @param $field
-     * @return NovaDependencyContainer
+     * @return DependencyContainer
      */
     public function dependsOnNot($field, $value)
     {
@@ -72,7 +72,7 @@ class NovaDependencyContainer extends Field
      * Adds a dependency for not empty
      *
      * @param $field
-     * @return NovaDependencyContainer
+     * @return DependencyContainer
      */
     public function dependsOnEmpty($field)
     {
@@ -87,7 +87,7 @@ class NovaDependencyContainer extends Field
      * Adds a dependency for not empty
      *
      * @param $field
-     * @return NovaDependencyContainer
+     * @return DependencyContainer
      */
     public function dependsOnNotEmpty($field)
     {
