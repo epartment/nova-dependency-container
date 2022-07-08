@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2021 Optimist Digital
+Copyright (c) 2022 Outl1ne <info@outl1ne.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

@@ -1,9 +1,9 @@
 <?php
 
-namespace OptimistDigital\NovaDependencyContainer;
+namespace Outl1ne\DependencyContainer;
 
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Route;
 use Laravel\Nova\Fields\FieldCollection;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
@@ -24,7 +24,7 @@ trait HasDependencies
         $availableFields = [];
 
         foreach ($fields as $field) {
-            if ($field instanceof NovaDependencyContainer) {
+            if ($field instanceof DependencyContainer) {
                 $availableFields[] = $this->filterFieldForRequest($field, $request);
                 if ($field->areDependenciesSatisfied($request) || $this->extractableRequest($request, $this->model())) {
                     if ($this->doesRouteRequireChildFields()) {
@@ -74,7 +74,8 @@ trait HasDependencies
      *
      * @todo: implement
      */
-    public function filterFieldForRequest($field, NovaRequest $request) {
+    public function filterFieldForRequest($field, NovaRequest $request)
+    {
         // @todo: filter fields for request, e.g. show/hideOnIndex, create, update or whatever
         return $field;
     }
@@ -82,7 +83,7 @@ trait HasDependencies
     /**
      * @return bool
      */
-    protected function doesRouteRequireChildFields() : bool
+    protected function doesRouteRequireChildFields(): bool
     {
         return Str::endsWith(Route::currentRouteAction(), [
             'FieldDestroyController@handle',

@@ -1,12 +1,14 @@
 <?php
 
-namespace OptimistDigital\NovaDependencyContainer\Http\Requests;
+namespace Outl1ne\DependencyContainer\Http\Requests;
 
-use OptimistDigital\NovaDependencyContainer\HasDependencies;
-use OptimistDigital\NovaDependencyContainer\NovaDependencyContainer;
+use Alexwenzel\DependencyContainer\HasDependencies;
+use Laravel\Nova\Http\Requests\NovaRequest;
+use Alexwenzel\DependencyContainer\DependencyContainer;
 use Laravel\Nova\Http\Requests\ActionRequest as NovaActionRequest;
 
-class ActionRequest extends NovaActionRequest {
+class ActionRequest extends NovaActionRequest
+{
 
     use HasDependencies;
 
@@ -15,11 +17,12 @@ class ActionRequest extends NovaActionRequest {
      *
      * @return void
      */
-    public function validateFields() {
+    public function validateFields()
+    {
         $availableFields = [];
 
-        foreach ($this->action()->fields() as $field) {
-            if ($field instanceof NovaDependencyContainer) {
+        foreach ($this->action()->fields($this) as $field) {
+            if ($field instanceof DependencyContainer) {
                 // do not add any fields for validation if container is not satisfied
                 if ($field->areDependenciesSatisfied($this)) {
                     $availableFields[] = $field;
@@ -37,5 +40,10 @@ class ActionRequest extends NovaActionRequest {
         $this->validate(collect($availableFields)->mapWithKeys(function ($field) {
             return $field->getCreationRules($this);
         })->all());
+    }
+
+    public function novaRequest()
+    {
+        return new NovaRequest;
     }
 }

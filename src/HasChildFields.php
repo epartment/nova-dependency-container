@@ -1,6 +1,6 @@
 <?php
 
-namespace OptimistDigital\NovaDependencyContainer;
+namespace Outl1ne\DependencyContainer;
 
 trait HasChildFields
 {
@@ -13,7 +13,7 @@ trait HasChildFields
     protected function extractChildFields($childFields)
     {
         foreach ($childFields as $childField) {
-            if ($childField instanceof NovaDependencyContainer) {
+            if ($childField instanceof DependencyContainer) {
                 $this->extractChildFields($childField->meta['fields']);
             } else {
                 if (array_search($childField->attribute, array_column($this->childFieldsArr, 'attribute')) === false) {
@@ -32,13 +32,13 @@ trait HasChildFields
     protected function applyRulesForChildFields($childField)
     {
         if (isset($childField->rules)) {
-            $childField->rules[] = "sometimes:required:".$childField->attribute;
+            $childField->rules[] = "sometimes:required:" . $childField->attribute;
         }
         if (isset($childField->creationRules)) {
-            $childField->creationRules[] = "sometimes:required:".$childField->attribute;
+            $childField->creationRules[] = "sometimes:required:" . $childField->attribute;
         }
         if (isset($childField->updateRules)) {
-            $childField->updateRules[] = "sometimes:required:".$childField->attribute;
+            $childField->updateRules[] = "sometimes:required:" . $childField->attribute;
         }
         return $childField;
     }

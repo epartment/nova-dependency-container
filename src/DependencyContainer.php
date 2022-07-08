@@ -1,6 +1,6 @@
 <?php
 
-namespace OptimistDigital\NovaDependencyContainer;
+namespace Outl1ne\NovaDependencyContainer;
 
 use Illuminate\Support\Str;
 use Laravel\Nova\Fields\Field;
@@ -13,7 +13,7 @@ class NovaDependencyContainer extends Field
      *
      * @var string
      */
-    public $component = 'nova-dependency-container';
+    public $component = 'dependency-container';
 
     /**
      * @var bool
@@ -31,8 +31,10 @@ class NovaDependencyContainer extends Field
     {
         parent::__construct('', $attribute, $resolveCallback);
 
-        $this->withMeta(['fields' => $fields]);
-        $this->withMeta(['dependencies' => []]);
+        $this->withMeta([
+            'fields' => $fields,
+            'dependencies' => [],
+        ]);
     }
 
     /**
@@ -149,20 +151,20 @@ class NovaDependencyContainer extends Field
         }
 
         foreach ($this->meta['dependencies'] as $index => $dependency) {
-
             $this->meta['dependencies'][$index]['satisfied'] = false;
-
             $value = data_get($resource, str_replace('->', '.', $dependency['property']));
 
             if (array_key_exists('empty', $dependency) && empty($value)) {
                 $this->meta['dependencies'][$index]['satisfied'] = true;
                 continue;
             }
+
             // inverted `empty()`
             if (array_key_exists('notEmpty', $dependency) && !empty($value)) {
                 $this->meta['dependencies'][$index]['satisfied'] = true;
                 continue;
             }
+
             // inverted
             if (array_key_exists('nullOrZero', $dependency) && in_array($value, [null, 0, '0'], true)) {
                 $this->meta['dependencies'][$index]['satisfied'] = true;
@@ -179,6 +181,7 @@ class NovaDependencyContainer extends Field
                     $this->meta['dependencies'][$index]['satisfied'] = true;
                     continue;
                 }
+
                 // @todo: quickfix for MorphTo
                 $morphable_attribute = $resource->getAttribute($dependency['property'] . '_type');
                 if ($morphable_attribute !== null && Str::endsWith($morphable_attribute, '\\' . $dependency['value'])) {

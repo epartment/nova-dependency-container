@@ -1,8 +1,8 @@
 # Nova Dependency Container
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/optimistdigital/nova-dependency-container.svg)](https://packagist.org/packages/optimistdigital/nova-dependency-container)
-[![Total Downloads](https://img.shields.io/packagist/dt/optimistdigital/nova-dependency-container.svg)](https://packagist.org/packages/optimistdigital/nova-dependency-container)
-[![License](https://img.shields.io/packagist/l/optimistdigital/nova-dependency-container.svg)](https://github.com/optimistdigital/nova-dependency-container/blob/main/LICENSE.md)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/outl1ne/nova-dependency-container.svg)](https://packagist.org/packages/outl1ne/nova-dependency-container)
+[![Total Downloads](https://img.shields.io/packagist/dt/outl1ne/nova-dependency-container.svg)](https://packagist.org/packages/outl1ne/nova-dependency-container)
+[![License](https://img.shields.io/packagist/l/outl1ne/nova-dependency-container.svg)](https://github.com/outl1ne/nova-dependency-container/blob/master/LICENSE.md)
 
 This [Laravel Nova](https://nova.laravel.com) package adds a container for grouping fields that depend on other fields' values.
 
@@ -13,21 +13,21 @@ This [Laravel Nova](https://nova.laravel.com) package adds a container for group
 
 ## Screenshots
 
-![Screenshots](https://raw.githubusercontent.com/optimistdigital/nova-dependency-container/master/docs/demo.gif)
+![Screenshots](./docs/demo.gif)
 
 ## Installation
 
 Install the package in a Laravel Nova project via Composer:
 
 ```bash
-composer require optimistdigital/nova-dependency-container
+composer require outl1ne/nova-depdendency-container
 ```
 
 ## Usage
 
-1. Add the `OptimistDigital\NovaDependencyContainer\HasDependencies` trait to your Nova Resource.
-2. Add the `OptimistDigital\NovaDependencyContainer\NovaDependencyContainer` field to your Nova Resource.
-3. Add the `OptimistDigital\NovaDependencyContainer\ActionHasDependencies` trait to your Nova Actions that you wish to use dependencies on.
+1. Add the `Outl1ne\NovaDependencyContainer\HasDependencies` trait to your Nova Resource.
+2. Add the `Outl1ne\NovaDependencyContainer\NovaDependencyContainer` field to your Nova Resource.
+3. Add the `Outl1ne\NovaDependencyContainer\ActionHasDependencies` trait to your Nova Actions that you wish to use dependencies on.
 
 ```php
 class Page extends Resource
@@ -78,7 +78,7 @@ The fields used as dependencies can be of any Laravel Nova field type. Currently
 
 Here is an example using a checkbox:
 
-![Demo](https://raw.githubusercontent.com/optimistdigital/nova-dependency-container/master/docs/demo-2.gif)
+![Demo](./docs/demo-2.gif)
 
 ### BelongsTo dependency
 

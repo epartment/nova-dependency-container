@@ -1,6 +1,6 @@
 <template>
   <div v-if="dependenciesSatisfied">
-    <div v-for="childField in field.fields">
+    <div v-for="(childField, i) in field.fields" :key="i">
       <component
         :is="'detail-' + childField.component"
         :resource-id="resourceId"
