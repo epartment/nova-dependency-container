@@ -1,5 +1,5 @@
 {
-  "name": "optimistdigital/nova-dependency-container",
+  "name": "outl1ne/nova-dependency-container",
   "description": "A Laravel Nova field container allowing to depend on other fields values",
   "keywords": [
     "laravel",
@@ -12,13 +12,13 @@
   },
   "autoload": {
     "psr-4": {
-      "OptimistDigital\\NovaDependencyContainer\\": "src/"
+      "Outl1ne\\NovaDependencyContainer\\": "src/"
     }
   },
   "extra": {
     "laravel": {
       "providers": [
-        "OptimistDigital\\NovaDependencyContainer\\FieldServiceProvider"
+        "Outl1ne\\NovaDependencyContainer\\FieldServiceProvider"
       ]
     }
   },
