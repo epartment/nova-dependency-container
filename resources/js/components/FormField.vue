@@ -15,6 +15,7 @@
 </template>
 
 <script>
+import { walk } from '../utils';
 import { FormField, HandlesValidationErrors } from 'laravel-nova';
 
 export default {
@@ -39,7 +40,8 @@ export default {
     // @todo: refactor entire watcher procedure, this approach isn't maintainable ..
     registerDependencyWatchers(root, callback) {
       callback = callback || null;
-      root.$children.forEach(component => {
+
+      walk(root.$.subTree, component => {
         if (this.componentIsDependency(component)) {
           // @todo: change `findWatchableComponentAttribute` to return initial state(s) of current dependency.
           let attribute = this.findWatchableComponentAttribute(component),
@@ -100,11 +102,8 @@ export default {
       }
 
       for (let dependency of this.field.dependencies) {
-        // #93 compatability with flexible-content, which adds a generated attribute for each field
-
         if (component.field.attribute === this.field.attribute + dependency.field) {
-          // Fix Action picking up fields in the background
-          return !component.$options.name.startsWith('index');
+          return true;
         }
       }
 
