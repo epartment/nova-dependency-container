@@ -20,7 +20,7 @@ This [Laravel Nova](https://nova.laravel.com) package adds a container for group
 Install the package in a Laravel Nova project via Composer:
 
 ```bash
-composer require outl1ne/nova-depdendency-container
+composer require outl1ne/nova-dependency-container
 ```
 
 ## Usage
