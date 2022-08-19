@@ -1,5 +1,5 @@
 <template>
-  <div v-if="dependenciesSatisfied">
+  <template v-if="dependenciesSatisfied">
     <div v-for="(childField, i) in field.fields" :key="i">
       <component
         :is="'form-' + childField.component"
@@ -11,7 +11,7 @@
         :show-help-text="childField.helpText != null"
       />
     </div>
-  </div>
+  </template>
 </template>
 
 <script>
