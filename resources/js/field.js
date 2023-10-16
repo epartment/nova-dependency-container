@@ -1,4 +1,4 @@
-Nova.booting((Vue, router) => {
-    Vue.component('detail-nova-dependency-container', require('./components/DetailField'));
-    Vue.component('form-nova-dependency-container', require('./components/FormField'));
+Nova.booting((app, store) => {
+    app.component("DetailField", require("./components/DetailField.vue").default);
+    app.component("FormField", require("./components/FormField.vue").default);
 })

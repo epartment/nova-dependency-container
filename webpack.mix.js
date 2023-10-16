@@ -1,8 +1,9 @@
-let mix = require('laravel-mix')
+let mix = require('laravel-mix');
 
-mix.js('resources/js/field.js', 'dist/js')
-    .webpackConfig({
-        resolve: {
-            symlinks: false
-        }
-    })
+require('./nova.mix.js');
+
+mix
+    .setPublicPath('dist')
+    .js('resources/js/field.js', 'js')
+    .vue({ version: 3 })
+    .nova('workup/nova-dependency-container');

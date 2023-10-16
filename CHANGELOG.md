@@ -1,35 +1,53 @@
-## Nova Dependency Container
+# Changelog
 
-<br />
+All notable changes to this project will be documented in this file.
 
-### Releases
- - [v1.2.10](https://github.com/epartment/nova-dependency-container/releases/tag/1.2.10)
- 	- Fixes a problem with [Whitecubes Flexible Content](https://github.com/whitecube/nova-flexible-content) package where the dependency container would do nothing #93 [whitecube/nova-flexible-content#87](https://github.com/whitecube/nova-flexible-content/issues/87)
- - [v1.2.9](https://github.com/epartment/nova-dependency-container/releases/tag/1.2.9)
- 	- Support BelongsToMany field when depending on the seleced resource #52
- - [v1.2.8](https://github.com/epartment/nova-dependency-container/releases/tag/1.2.8)
-   - Ensure that each field resolves on it's own depending on the situation - PR #90
-   - Fixes #89, #88, #87, #85 and #40 
- - [v1.2.7](https://github.com/epartment/nova-dependency-container/releases/tag/1.2.7)
-   - Fix an index error in Nova 2.5.0 where the rules-set array requires a key fields attribute #86
-   - Support MorphTo controller #62,#85
-   - Moved releases/changes to `CHANGELOG.md`
- - [v1.2.6](https://github.com/epartment/nova-dependency-container/releases/tag/1.2.6)
-   - Fixes a problem where it should check if a model exist when creating a resource when it's impossible to satisfy dependencies
- - [v1.2.5](https://github.com/epartment/nova-dependency-container/releases/tag/1.2.5)
-   - Fixes a problem where Nova can't resolve custom ActionRequest [#82](https://github.com/epartment/nova-dependency-container/issues/82)
- - [v1.2.4](https://github.com/epartment/nova-dependency-container/releases/tag/1.2.4)
-   - Fixes a problem where fields with same names use previous validation rules when used in multiple containers [#81](https://github.com/epartment/nova-dependency-container/issues/81), [#60](https://github.com/epartment/nova-dependency-container/pull/60) (@melewski)
- - [v1.2.3](https://github.com/epartment/nova-dependency-container/releases/tag/1.2.3)
-   - Fixed belongs-to/morph-to as nested fields [#80](https://github.com/epartment/nova-dependency-container/issues/80)
-   - Added missing methods in validation rules
- - [v1.2.2](https://github.com/epartment/nova-dependency-container/releases/tag/1.2.2)
-   - fixed fields not resolving when using `displayUsingLabels`, `resolveUsing` or `displayUsing`. (@dbf)
-   - fixed action fields who do not return a collection (@bsormagec)
-   - added two new methods `onEmpty` and `onNullOrZero`. (@niektenhoopen, @dbf)
-   - changed the logic for dependency satisfaction where it is reversed
-   - changed `field` in two separate names; `field` and `property`, to avoid confusion when being used on a resource or component.
- - [v1.2.1](https://github.com/epartment/nova-dependency-container/releases/tag/1.2.1)
-   - fixed support for [BelongsTo](https://nova.laravel.com/docs/1.0/resources/relationships.html#belongsto) and [MorphTo](https://nova.laravel.com/docs/1.0/resources/relationships.html#morphto) fields (@mikaelpopowicz, @dbf)
- - [v1.2.0](https://github.com/epartment/nova-dependency-container/releases/tag/1.2.0) 
-   - working version for Laravel 5.8 | 6 and Nova 2.x. (@FastPointGaming, @spaceo, @cdbeaton, @yaroslawww)
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [2.0.4] - 2023-24-07
+
+### Changed
+
+- Added .gitattributes file to reduce vendor size
+
+## [2.0.3] - 2022-19-12
+
+### Changed
+
+- Fix error in FormField.fill()
+
+## [2.0.2] - 2022-26-09
+
+### Changed
+
+- Fix crash when attempting to fill unfillable fields.
+
+## [2.0.1] - 2022-02-09
+
+### Changed
+
+- Fixed crash when used with Actions
+
+## [2.0.0] - 2022-19-08
+
+### Added
+
+- Nova 4 support
+
+## [1.0.1] - 2021-09-07
+
+### Changed
+
+- Fixed DependencyContainer inside Action picking up fields outside the modal and using wrong initial value
+
+## [1.0.0] - 2021-09-07
+
+Initial release.
+Forked from [epartment/nova-dependency-container](https://github.com/epartment/nova-dependency-container) version 1.3.3.
+
+### Changed
+
+- Use `data_get` to access resource properties to support array/object values
+- Updated dependencies
+- Updated packages
